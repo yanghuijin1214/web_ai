@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREDICT</title>
+    <link rel="stylesheet" href="{% static 'predict_Export.css' %}">
+</head>
+<body>
+    <div class="bar">
+        <div class="Userimg">
+            <img src="{% static 'user_img.png'%}" style="width: 150px; height: 150px">
+        </div>
+        <div class="Userid">
+            <u>user id</u>
+        </div>
+        <div class="Setting">
+            <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png' %}" style="width: 20px; height: 20px">
+        </div>
+        <div class="Logout">
+            <input type="button" value="logout" onclick="location.href='/login'">
+        </div>
+        <div class="Delete">
+            <input type="button" value="Delete model">
+        </div>
+        <div class="Label">
+            <input type="button" value="Label" onclick="location.href='/label'">
+        </div>
+        <div class="Train">
+            <input type="button" value="Train" onclick="location.href='/train'">
+        </div>
+        <div class="Predict">
+            <input type="button" value="Predict" onclick="location.href='/predict/export'">
+        </div>
+        <div class="Countbox" >
+            <div class="All">
+                <div class="Alltxt">
+                    All Images
+                </div>
+                <div class="Allprog">
+                    <progress value="0" max="100" style="width: 225px;"></progress>
+                </div>
+                <div class="Allresult">
+                    0%
+                </div>
+            </div>
+            <div class="L1">
+                <div class="Ltxt1">
+                    One
+                </div>
+                <div class="Result1">
+                    0%
+                </div>
+                <div class="Prog1">
+                    <progress value="0" max="100" style="width: 225px;"></progress>
+                </div>
+            </div>
+            <div class="L2">
+                <div class="Ltxt2">
+                    Two
+                </div>
+                <div class="Result2">
+                    0%
+                </div>
+                <div class="Prog2">
+                    <progress value="0" max="100" style="width: 225px;"></progress>
+                </div>
+            </div>        
+        </div>
+    </div>
+    <div class="frame">
+        <h1>Predict</h1>
+        <div class="Box">
+            <div class="Images">
+                <input type="button" value="Images" onclick="location.href='/predict/image'">
+            </div>
+            <div class="Camera">
+                <input type="button" value="Camera" onclick="location.href='/predict/camera'">
+            </div>
+            <div class="Export">
+                <input type="button" value="Export" onclick="location.href='/predict/export'">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

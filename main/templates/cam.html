@@ -1,0 +1,77 @@
+<style>
+    #container {
+        margin: 0px auto;
+        width: 500px;
+        height: 375px;
+    }
+    #camera_canvas,#output {
+        transform: rotateY(180deg);
+        position:absolute
+    }
+    #camera_canvas {
+        z-index:-1000;
+        display:none
+    }
+    #videoElement {
+        width: 500px;
+        height: 375px;
+        background-color: #666;
+        transform: rotateY(180deg);
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</head>
+     
+<body>
+<div id="container">
+    <canvas id="camera_canvas"></canvas>
+    <video autoplay="true" id="videoElement">
+        
+    </video>
+</div>
+
+<button id="capture">사진 촬영</button>
+<img src="//:0" alt="" id="output">  
+<a id="target" style="display: none"></a>
+
+
+<script>
+    var form= document.querySelector("#imageForm");
+    var video = document.querySelector("#videoElement");
+    var sensor=document.querySelector("#camera_canvas");
+    var capture=document.querySelector("#capture");
+
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+          video.srcObject = stream;
+        })
+        .catch(function (err0r) {
+          console.log("Something went wrong!");
+        });
+    }
+    capture.addEventListener("click",function(){
+        sensor.width=video.videoWidth;
+        sensor.height=video.videoHeight;
+        sensor.getContext("2d").drawImage(video,0,0);
+        save(sensor);
+        console.log(sensor.height);
+    });
+
+    function save(canvas){        
+            var img=canvas.toDataURL('image/png');
+            img=img.replace("data:image/png;base64,","");
+            
+            $.ajax({
+            type: "POST",
+            url: "/image/save/",
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            data: { "image": img,"userid":"aaaa",labeling:"false" },
+            dataType:"text"
+            }).success(function(o) {
+            alert('선택영역을 서버의 이미지 파일에 저장했습니다');
+            });
+    }
+
+</script>
+    

@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRAIN</title>
+    <link rel="stylesheet" href="{% static 'train.css' %}">
+</head>
+<body>
+    <div class="bar">
+        <div class="Userimg">
+            <img src="{% static 'user_img.png' %}" style="width: 150px; height: 150px">
+        </div>
+        <div class="Userid">
+            <u>user id</u>
+        </div>
+        <div class="Setting">
+            <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png' %}" style="width: 20px; height: 20px">
+        </div>
+        <div class="Logout">
+            <input type="button" value="logout" onclick="location.href='/main'">
+        </div>
+        <div class="Delete">
+            <input type="button" value="Delete model">
+        </div>
+        <div class="Label">
+            <input type="button" value="Label" onclick="location.href='/label'">
+        </div>
+        <div class="Train">
+            <input type="button" value="Train" onclick="location.href='/train'">
+        </div>
+        <div class="Predict">
+            <input type="button" value="Predict" onclick="location.href='/predict/image'">
+        </div>
+        <div class="Countbox" >
+            <div class="All">
+                <div class="Alltxt">
+                    All Images
+                </div>
+                <div class="Allprog">
+                    <progress value="0" max="100" style="width: 225px;"></progress>
+                </div>
+                <div class="Allresult">
+                    0%
+                </div>
+            </div>
+            <div class="L1">
+                <div class="Ltxt1">
+                    One
+                </div>
+                <div class="Result1">
+                    0%
+                </div>
+                <div class="Prog1">
+                    <progress value="0" max="100" style="width: 225px;"></progress>
+                </div>
+            </div>
+            <div class="L2">
+                <div class="Ltxt2">
+                    Two
+                </div>
+                <div class="Result2">
+                    0%
+                </div>
+                <div class="Prog2">
+                    <progress value="0" max="100" style="width: 225px;"></progress>
+                </div>
+            </div>        
+        </div>
+    </div>
+    <div class="frame">
+        <h1>Train</h1>
+        <div class="Sort">
+            <input type="button" value="Sort" id="Sort">
+        </div>
+        <div class="Sortmodal" >
+            <input type="radio" name="sort" value="Labeling" id="Labeling" checked><span class="Labeling-text">Label</span>
+            <br>
+            <input type="radio" name="sort" value="Date" id="Date"><span class="Date-text">Date</span>
+            <br>
+            <input type="radio" name="sort" value="Result" id="Result"><span class="Result-text">Result</span>
+            <br>
+            <input type="radio" name="sort" value="Test" id="Test"><span class="Test-text">Test images</span>
+            <div class="Sortx">
+                <input type="button" value="x">
+            </div>
+        </div>
+        <div class="Import">
+            <input type="button" value="Import">
+        </div>
+        <div class="Importmodal">
+            <div class="Images">
+                <button type="button" id="imagesB">
+                    <div class="imagebox">
+                        <img src="{% static 'image.png' %}" style="width:30px;height:30px" id="imageicon">
+                    </div>
+                    <div class="imagetxt1">
+                        Images
+                    </div>
+                    <br>
+                    <div class="imagetxt2">
+                        Import images from your computer.
+                    </div>
+                </button>
+            </div>
+            <div class="Camera">
+                <button type="button" id="cameraB">
+                    <div class="camerabox">
+                        <img src="{% static 'camera.png' %}" style="width:30px;height:30px" id="cameraicon">
+                    </div>
+                    <div class="cameratxt1">
+                        Camera
+                    </div>
+                    <br>
+                    <div class="cameratxt2">
+                        Capture images with your webcam.
+                    </div>
+                </button>
+            </div>
+            <div class="Importx">
+                <input type="button" value="x">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{% static 'train.js' %}"></script>
+</body>
+</html>

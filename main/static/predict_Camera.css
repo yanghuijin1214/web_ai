@@ -1,0 +1,266 @@
+.frame{
+    background-color: #f3f3f3;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 300px;
+    top: 0%;
+}
+
+.Userimg{
+    position: absolute;
+    left: 74px;
+    top: 15px;
+}
+
+.Userid{
+    position: absolute;
+    left: 121px;
+    top: 172px;
+}
+
+.Setting{
+    position: absolute;
+    left: 170px;
+    top:173px;
+}
+
+#setting{
+    border: none;
+    background: none;
+}
+
+#setting:hover{
+    cursor: pointer;
+}
+
+.Logout{
+    position: absolute;
+    left: 121px;
+    top: 196px;
+}
+
+.Logout input{
+    border-radius: 5px;
+    border: none;
+    width: 50px;
+    height: 20px;
+}
+
+.Logout input:hover{
+    cursor: pointer;
+}
+
+.Label{
+    position: absolute;
+    left: 25px;
+    top: 240px;
+}
+
+.Label input{
+    background: white;
+    border-radius: 5px;
+    border: none;
+    width: 250px;
+    height: 47px;
+    font-size: 35px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+.Label input:hover{
+    background-color: rgba(0,0,0,0.07);
+    cursor: pointer;
+}
+
+.Train{
+    position: absolute;
+    left: 25px;
+    top: 300px;
+}
+
+.Train input{
+    border-radius: 5px;
+    border: none;
+    width: 250px;
+    height: 47px;
+    font-size: 35px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    text-align: center;
+    background-color: white;
+}
+
+.Train input:hover{
+    background-color: rgba(0,0,0,0.07);
+    cursor: pointer;
+}
+
+.Predict{
+    position: absolute;
+    left: 25px;
+    top: 360px;
+}
+
+.Predict input{
+    border-radius: 5px;
+    border: none;
+    width: 250px;
+    height: 47px;
+    font-size: 35px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    text-align: center;
+    background-color: #d5c9dd;
+    color: white;
+}
+
+.Delete{
+    position: absolute;
+    top: 660px;
+    left: 100px;
+}
+
+.Delete input{
+    border-radius: 5px;
+    border: none;
+    width: 100px;
+    height: 30px;
+}
+
+.Delete input:hover{
+    cursor: pointer;
+}
+
+.Countbox{
+    overflow: auto;
+    position: absolute;
+    top: 420px;
+    left: 25px;
+    width: 250px;
+    height: 220px;
+    
+}
+
+.Allprog{
+    position: absolute;
+    left: 10px;
+    top: 20px;
+}
+
+.Alltxt{
+    position: absolute;
+    left: 10px;
+    top: 2px;
+}
+
+.Allresult{
+    position: absolute;
+    top: 2px;
+    left: 220px;
+    text-align: right;
+}
+
+.Prog1{
+    position: absolute;
+    left: 10px;
+    top: 60px;
+}
+
+.Ltxt1{
+    position: absolute;
+    left: 10px;
+    top: 44px;
+    text-align: left;
+}
+
+.Result1{
+    position: absolute;
+    top: 44px;
+    left: 220px;
+    text-align: right;
+}
+
+.Prog2{
+    position: absolute;
+    left: 10px;
+    top: 100px;
+}
+
+.Ltxt2{
+    position: absolute;
+    left: 10px;
+    top: 84px;
+    text-align: left;
+}
+
+.Result2{
+    position: absolute;
+    top: 84px;
+    left: 220px;
+    text-align: right;
+}
+
+.Box{
+    position: absolute;
+    top: 20px;
+    left: 450px;
+    width: 300px;
+    height: 45px;
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.1);
+}
+
+.Images input{
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    border: none;
+    border-radius: 10px;
+    background:none;
+    width: 97px;
+    height: 40px;
+    font-weight: bold;
+}
+
+.Images input:hover{
+    cursor: pointer;
+}
+
+.Camera input{
+    position: absolute;
+    top: 2px;
+    left: 102.3px;
+    border: none;
+    border-radius: 10px;
+    background-color: white;
+    width: 97px;
+    height: 40px;
+    font-weight: bold;
+}
+
+.Camera input:hover{
+    cursor: pointer;
+}
+
+.Export input{
+    position: absolute;
+    top: 2px;
+    left: 201px;
+    border: none;
+    border-radius: 10px;
+    background:none;
+    width: 97px;
+    height: 40px;
+    font-weight: bold;
+}
+
+.Export input:hover{
+    cursor: pointer;
+}
+
+h1{
+    position: absolute;
+    left: 50px;
+}
