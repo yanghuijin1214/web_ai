@@ -29,7 +29,7 @@
         
     </video>
 </div>
-
+<input id="userid" style="display:none" value="{{userid}}">
 <button id="capture">사진 촬영</button>
 <img src="//:0" alt="" id="output">  
 <a id="target" style="display: none"></a>
@@ -40,7 +40,8 @@
     var video = document.querySelector("#videoElement");
     var sensor=document.querySelector("#camera_canvas");
     var capture=document.querySelector("#capture");
-
+    var userid=document.querySelector('#userid').value;
+    
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then(function (stream) {
@@ -66,7 +67,7 @@
             type: "POST",
             url: "/image/save/",
             contentType:"application/x-www-form-urlencoded; charset=utf-8",
-            data: { "image": img,"userid":"aaaa",labeling:"false" },
+            data: { "image": img,"userid":userid,labeling:"false" },
             dataType:"text"
             }).success(function(o) {
             alert('선택영역을 서버의 이미지 파일에 저장했습니다');

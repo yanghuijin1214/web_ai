@@ -17,6 +17,7 @@
     position: absolute;
     left: 121px;
     top: 172px;
+    font-size: 1em;
 }
 
 .Setting{
@@ -45,6 +46,7 @@
     border: none;
     width: 50px;
     height: 20px;
+    font-size: 1em;
 }
 
 .Logout input:hover{
@@ -63,7 +65,7 @@
     border: none;
     width: 250px;
     height: 47px;
-    font-size: 35px;
+    font-size: 2.4em;
     font-weight: bold;
     letter-spacing: 5px;
     text-align: center;
@@ -85,7 +87,7 @@
     border: none;
     width: 250px;
     height: 47px;
-    font-size: 35px;
+    font-size: 2.4em;
     font-weight: bold;
     letter-spacing: 5px;
     text-align: center;
@@ -108,7 +110,7 @@
     border: none;
     width: 250px;
     height: 47px;
-    font-size: 35px;
+    font-size: 2.4em;
     font-weight: bold;
     letter-spacing: 5px;
     text-align: center;
@@ -118,15 +120,17 @@
 
 .Delete{
     position: absolute;
-    top: 660px;
-    left: 100px;
+    /*top: 660px;*/
+    bottom: 2.5%;
+    left: 73px;
 }
 
 .Delete input{
     border-radius: 5px;
     border: none;
-    width: 100px;
-    height: 30px;
+    width: 150px;
+    height: 50px;
+    font-size: 1.2em;
 }
 
 .Delete input:hover{
@@ -137,10 +141,11 @@
     overflow: auto;
     position: absolute;
     top: 420px;
+    /*bottom: 80px;*/
     left: 25px;
     width: 250px;
-    height: 220px;
-    
+    height: 30%;
+
 }
 
 .Allprog{
@@ -153,6 +158,7 @@
     position: absolute;
     left: 10px;
     top: 2px;
+    font-size: 1em;
 }
 
 .Allresult{
@@ -160,6 +166,7 @@
     top: 2px;
     left: 220px;
     text-align: right;
+    font-size: 1em;
 }
 
 .Prog1{
@@ -173,6 +180,7 @@
     left: 10px;
     top: 44px;
     text-align: left;
+    font-size: 1em;
 }
 
 .Result1{
@@ -180,6 +188,7 @@
     top: 44px;
     left: 220px;
     text-align: right;
+    font-size: 1em;
 }
 
 .Prog2{
@@ -193,6 +202,7 @@
     left: 10px;
     top: 84px;
     text-align: left;
+    font-size: 1em;
 }
 
 .Result2{
@@ -200,12 +210,15 @@
     top: 84px;
     left: 220px;
     text-align: right;
+    font-size: 1em;
 }
 
 .Box{
     position: absolute;
     top: 20px;
-    left: 450px;
+    /*left: 450px;*/
+    
+    right: 50%;
     width: 300px;
     height: 45px;
     border-radius: 10px;
@@ -218,10 +231,11 @@
     left: 3px;
     border: none;
     border-radius: 10px;
-    background-color: white;
+    background:none;
     width: 97px;
     height: 40px;
     font-weight: bold;
+    background-color: white;
 }
 
 .Images input:hover{
@@ -234,10 +248,10 @@
     left: 102.3px;
     border: none;
     border-radius: 10px;
-    background:none;
     width: 97px;
     height: 40px;
     font-weight: bold;
+    background: none;
 }
 
 .Camera input:hover{

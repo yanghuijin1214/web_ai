@@ -14,13 +14,13 @@
             <img src="{% static 'user_img.png' %}" style="width: 150px; height: 150px">
         </div>
         <div class="Userid">
-            <u>user id</u>
+            <u>{{userid}}</u>
         </div>
         <div class="Setting">
             <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png' %}" style="width: 20px; height: 20px">
         </div>
         <div class="Logout">
-            <input type="button" value="logout" onclick="location.href='/main'">
+            <input type="button" value="logout" onclick="location.href='/logout'">
         </div>
         <div class="Delete">
             <input type="button" value="Delete model">

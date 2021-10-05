@@ -17,6 +17,7 @@
     position: absolute;
     left: 121px;
     top: 172px;
+    font-size: 1em;
 }
 
 .Setting{
@@ -45,6 +46,7 @@
     border: none;
     width: 50px;
     height: 20px;
+    font-size: 1em;
 }
 
 .Logout input:hover{
@@ -63,7 +65,7 @@
     border: none;
     width: 250px;
     height: 47px;
-    font-size: 35px;
+    font-size: 2.4em;
     font-weight: bold;
     letter-spacing: 5px;
     text-align: center;
@@ -85,15 +87,13 @@
     border: none;
     width: 250px;
     height: 47px;
-    font-size: 35px;
+    font-size: 2.4em;
     font-weight: bold;
     letter-spacing: 5px;
     text-align: center;
     background-color: #d5c9dd;
     color: white;
 }
-
-
 
 .Predict{
     position: absolute;
@@ -106,7 +106,7 @@
     border: none;
     width: 250px;
     height: 47px;
-    font-size: 35px;
+    font-size: 2.4em;
     font-weight: bold;
     letter-spacing: 5px;
     text-align: center;
@@ -120,15 +120,17 @@
 
 .Delete{
     position: absolute;
-    top: 660px;
-    left: 100px;
+    /*top: 660px;*/
+    bottom: 2.5%;
+    left: 73px;
 }
 
 .Delete input{
     border-radius: 5px;
     border: none;
-    width: 100px;
-    height: 30px;
+    width: 150px;
+    height: 50px;
+    font-size: 1.2em;
 }
 
 .Delete input:hover{
@@ -139,10 +141,10 @@
     overflow: auto;
     position: absolute;
     top: 420px;
+    /*bottom: 80px;*/
     left: 25px;
     width: 250px;
-    height: 220px;
-    
+    height: 30%;
 }
 
 .Allprog{
@@ -155,6 +157,7 @@
     position: absolute;
     left: 10px;
     top: 2px;
+    font-size: 1em;
 }
 
 .Allresult{
@@ -162,6 +165,7 @@
     top: 2px;
     left: 220px;
     text-align: right;
+    font-size: 1em;
 }
 
 .Prog1{
@@ -175,6 +179,7 @@
     left: 10px;
     top: 44px;
     text-align: left;
+    font-size: 1em;
 }
 
 .Result1{
@@ -182,6 +187,7 @@
     top: 44px;
     left: 220px;
     text-align: right;
+    font-size: 1em;
 }
 
 .Prog2{
@@ -195,6 +201,7 @@
     left: 10px;
     top: 84px;
     text-align: left;
+    font-size: 1em;
 }
 
 .Result2{
@@ -202,12 +209,14 @@
     top: 84px;
     left: 220px;
     text-align: right;
+    font-size: 1em;
 }
 
 .Sort{
     position: absolute;
     top: 25px;
-    left: 1000px;
+    /*left: 1000px;*/
+    right: 450px;
 }
 
 .Sort input{
@@ -217,7 +226,7 @@
     height: 45px;
     background-color: rgba(0,0,0,0.07);
     font-weight: bold;
-    font-size: 15px;
+    font-size: 1em;
 }
 
 .Sort input:hover{
@@ -228,7 +237,8 @@
 .Import{
     position: absolute;
     top: 25px;
-    left: 1100px;
+    /*left: 1100px;*/
+    right: 350px;
 }
 
 .Import input{
@@ -238,7 +248,7 @@
     height: 45px;
     background-color: rgba(0,0,0,0.07);
     font-weight: bold;
-    font-size: 15px;
+    font-size: 1em;
 }
 
 .Import input:hover{
@@ -262,7 +272,7 @@ h1{
   
     position: absolute;
     top: 85px;
-    left: 925px;
+    right: 450px;
 }
 
 .Sortx input{
@@ -334,7 +344,8 @@ h1{
     height: 180px;
     position: absolute;
     top: 85px;
-    left: 777px;
+    /*left: 777px;*/
+    right: 350px;
     border-radius: 20px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
     display: none;

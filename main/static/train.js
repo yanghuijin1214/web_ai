@@ -9,6 +9,8 @@ const Sx = document.querySelector('.Sortx');
 
 Import.addEventListener('click',()=>{
     Importmodal.style.display='block';
+    if (Sortmodal.style.display='block')
+        Sortmodal.style.display='none';
 })
 
 Ix.addEventListener('click',()=>{
@@ -17,6 +19,8 @@ Ix.addEventListener('click',()=>{
 
 Sort.addEventListener('click',()=>{
     Sortmodal.style.display='block';
+    if (Importmodal.style.display='block')
+        Importmodal.style.display='none';
 })
 
 Sx.addEventListener('click',()=>{
