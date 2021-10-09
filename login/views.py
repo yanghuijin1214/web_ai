@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from .decorators import login_check
 from django.contrib.auth.hashers import make_password, check_password
 from .models import User
 # Create your views here.
@@ -21,15 +22,16 @@ def login(request):
 
         res_data={}
         if not (login_id and login_pw):
-            res_data['error']="Incorrect id or password."
+            res_data['error']="* Incorrect ID or password."
         else:
             try:
                 user=User.objects.get(user_id=login_id)
             except User.DoesNotExist:
-                res_data['error']="Incorrect id or password."
+                res_data['error']="* Incorrect ID or password."
+                return render(request, 'login.html',res_data)
 
             if not check_password(login_pw,user.password):
-                res_data['error']="Incorrect id or password."
+                res_data['error']="* Incorrect ID or password."
             else:
                 request.session['user']=login_id
                 return redirect('/')
@@ -49,17 +51,17 @@ def join(request):
         res_data={}
 
         if not (join_id and join_pw and join_pwcheck):
-            res_data['error']='Fill out the form.'
+            res_data['error']='* Fill out the form.'
         elif len(join_id)<8 or len(join_id)>20:
-            res_data['error']='Please enter ID of 8 to 20 characters.'
+            res_data['error']='* Please enter ID of 8 to 20 characters.'
         elif len(join_pw)<8 or len(join_pw)>20:
-            res_data['error']='Please enter password of 8 to 20 characters.'
+            res_data['error']='* Please enter password of 8 to 20 characters.'
         elif join_pw !=join_pwcheck:
-            res_data['error']='Passwords do not match.'
+            res_data['error']='* Passwords do not match.'
         else:
             try:
                 user=User.objects.get(user_id=join_id)
-                res_data['error']='ID already exists.'
+                res_data['error']='* ID already exists.'
             except:
                 new_user=User(
                     user_id=join_id,
@@ -71,5 +73,6 @@ def join(request):
     else:
         return render(request,'join.html')
 
+@login_check
 def setting(request):
     return render(request,'setting.html')
