@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +9,7 @@
     <title>LABEL</title>
     <link rel="stylesheet" href="{% static 'label.css' %}">
 </head>
+
 <body>
     <div class="bar">
         <div class="Userimg">
@@ -17,10 +19,10 @@
             <u>{{userid}}</u>
         </div>
         <div class="Setting">
-            <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png' %}" style="width: 20px; height: 20px">
+            <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png' %}" style="width: 30px; height: 30px">
         </div>
         <div class="Logout">
-            <input type="button" value="logout" onclick="location.href='/logout'">
+            <input type="button" value="logout" onclick="location.href='/login'">
         </div>
         <div class="Delete">
             <input type="button" value="Delete model">
@@ -34,7 +36,7 @@
         <div class="Predict">
             <input type="button" value="Predict" onclick="location.href='/predict/image'">
         </div>
-        <div class="Countbox" >
+        <div class="Countbox">
             <div class="All">
                 <div class="Alltxt">
                     All Images
@@ -67,7 +69,7 @@
                 <div class="Prog2">
                     <progress value="0" max="100" style="width: 225px;"></progress>
                 </div>
-            </div>        
+            </div>
         </div>
     </div>
     <div class="frame">
@@ -75,8 +77,9 @@
         <div class="Sort">
             <input type="button" value="Sort" id="Sort">
         </div>
-        <div class="Sortmodal" >
-            <input type="radio" name="sort" value="Labeling" id="Labeling" checked><span class="Labeling-text">Label</span>
+        <div class="Sortmodal">
+            <input type="radio" name="sort" value="Labeling" id="Labeling" checked><span
+                class="Labeling-text">Label</span>
             <br>
             <input type="radio" name="sort" value="Date" id="Date"><span class="Date-text">Date</span>
             <div class="Sortx">
@@ -88,7 +91,11 @@
         </div>
         <div class="Importmodal">
             <div class="Images">
-                <button type="button" id="imagesB">
+                <form name="imageForm" method="POST" enctype="multipart/form-data" action="/image/upload/">
+                    {% csrf_token %}
+                    <input type="file" id="file" name="file" onchange="changeValue(this)">
+                </form>
+                <label id="imagesB" for="file">
                     <div class="imagebox">
                         <img src="{% static 'image.png' %}" style="width:30px;height:30px" id="imageicon">
                     </div>
@@ -119,13 +126,37 @@
                 <input type="button" value="x">
             </div>
         </div>
-        
+
         <!--image-->
-        <div class="library">
+        <div id="labeltitle1">
+            <h2>label_title</h2>
+            <div id="labelcount1">
+                0
+            </div>
+        </div>
+
+        <div class="labeled">
+
+        </div>
+
+        <div id="unlabeltitle">
+            <h2>Unlabeled</h2>
+            <div id="unlabelcount">
+                {%if images%}
+                {{images|length}}
+                {%else%}
+                0
+                {%endif%}
+            </div>
+        </div>
+
+        <div class="unlabel">
             {%for image in images %}
             <div>
-            <image src="{{image.image.url}}" alt="{{image.image.url}}" width="250" height="200"/>
-            <!-- <p>{{image.userid}}</p> -->
+                <button type="button" class="imgbutton">
+                    <image src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180" id="img" />
+                </button>
+                <!-- <p>{{image.userid}}</p> -->
             </div>
             {%endfor%}
         </div>

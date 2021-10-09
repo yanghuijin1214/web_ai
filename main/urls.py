@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns=[
     path('cam/',views.cam),
-    path('save/',views.image)
+    path('save/',views.image),
+    path('upload/',views.upload)
 ]
