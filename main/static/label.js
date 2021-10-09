@@ -1,11 +1,10 @@
 const Importmodal = document.querySelector('.Importmodal');
-const Import = document.querySelector('.Import')
+const Import = document.querySelector('.Import');
 const Ix = document.querySelector('.Importx');
 
 const Sortmodal = document.querySelector('.Sortmodal');
-const Sort = document.querySelector('.Sort')
+const Sort = document.querySelector('.Sort');
 const Sx = document.querySelector('.Sortx');
-
 
 Import.addEventListener('click',()=>{
     Importmodal.style.display='block';
@@ -26,3 +25,7 @@ Sort.addEventListener('click',()=>{
 Sx.addEventListener('click',()=>{
     Sortmodal.style.display='none';
 })
+
+function changeValue(obj){
+    document.imageForm.submit
+}
