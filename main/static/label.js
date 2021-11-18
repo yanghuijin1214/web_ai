@@ -103,7 +103,6 @@ trainB.addEventListener('click', () => {
 
 yes.addEventListener('click', () => {
     var queryString=$("form[name=Train]").serialize();
-    console.log(queryString);
     Trainmodal2.style.visibility = 'visible';
     setTimeout(function(){
         var j=$.ajax({
