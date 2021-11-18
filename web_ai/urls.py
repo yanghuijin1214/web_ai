@@ -20,12 +20,17 @@ from django.contrib import admin
 from django.urls import path,include
 #from main.views import cam,image,label,train,predict_image,
 from main.views import *
-from login.views import login,home,join,logout,setting
+from login.views import *
+
+# def protected_file(request, path, document_root=None):
+#     messages.error(request, "접근 불가")
+#     return redirect('/')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cam/',cam),
     path('label/',label),
+    path('label/change/',label_change),
     path('train/',train),
     path('predict/image/',predict_image),
     path('predict/camera/',predict_camera),

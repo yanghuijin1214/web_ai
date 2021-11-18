@@ -1,3 +1,12 @@
+body {
+    margin:0;
+    padding:0;
+    -ms-user-select: none; 
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 .frame{
     background-color: #f3f3f3;
     width: 100%;
@@ -11,18 +20,25 @@
 
 .Userimg{
     position: absolute;
-    left: 74px;
-    top: 15px;
+    top:15px;
+    width:300px;
+    text-align:center;
 }
+
 
 .Userid{
     position: absolute;
-    left: 118px;
+    /* left: 110px; */
     top: 172px;
-    font-size: 1em;
     overflow: hidden;
-    width: auto;
+    width: 300px;
     text-align: center;
+}
+
+.Userid u {
+ text-decoration-line:none;   
+ font-size:1.1em;
+ font-weight: bolder;
 }
 
 
@@ -45,7 +61,9 @@
 .Logout{
     position: absolute;
     top: 200px;
-    left: 110px;
+    width: 300px;
+    text-align: center;
+    /* left: 110px; */
 }
 
 .Logout input{

@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LABEL</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'label.css' %}">
 </head>
 
@@ -19,10 +20,11 @@
             <u>{{userid}}</u>
         </div>
         <div class="Setting">
-            <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png' %}" style="width: 30px; height: 30px">
+            <button type="button" id="setting" onclick="location.href='/setting'"> <img
+                    src="{% static 'setting_img.png' %}" style="width: 30px; height: 30px">
         </div>
         <div class="Logout">
-            <input type="button" value="logout" onclick="location.href='/login'">
+            <input type="button" value="logout" onclick="location.href='/logout'">
         </div>
         <div class="Delete">
             <input type="button" value="Delete model">
@@ -36,52 +38,142 @@
         <div class="Predict">
             <input type="button" value="Predict" onclick="location.href='/predict/image'">
         </div>
-        <div class="Countbox">
-            <div class="All">
+
+        <div class="All">
+            <button type="button" id="Allb">
                 <div class="Alltxt">
                     All Images
                 </div>
                 <div class="Allprog">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{{total}}" max="{{total}}" style="width: 225px; "></progress>
                 </div>
                 <div class="Allresult">
-                    0
+                    {{total}}
                 </div>
-            </div>
-            <div class="L1">
+            </button>
+        </div>
+        <div class="L1">
+            <button type="button" id="L1B">
                 <div class="Ltxt1">
-                    One
+                    {{label1}}
                 </div>
                 <div class="Result1">
+                    {%if label1_images%}
+                    {{label1_images|length}}
+                    {%else%}
                     0
+                    {%endif%}
                 </div>
                 <div class="Prog1">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{%if label1_images%}{{label1_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                        style="width: 225px;"></progress>
                 </div>
-            </div>
-            <div class="L2">
+            </button>
+        </div>
+        <div class="L2">
+            <button type="button" id="L2B">
                 <div class="Ltxt2">
-                    Two
+                    {{label2}}
                 </div>
                 <div class="Result2">
+                    {%if label2_images%}
+                    {{label2_images|length}}
+                    {%else%}
                     0
+                    {%endif%}
                 </div>
                 <div class="Prog2">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{%if label2_images%}{{label2_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                        style="width: 225px;"></progress>
                 </div>
-            </div>
+            </button>
+        </div>
+        <div class="Unlabelimg">
+            <button type="button" id="UnlabelB">
+                <div class="Unlabeltxt">
+                    Unlabeled
+                </div>
+                <div class="Unlabelprog">
+                    <progress value="{%if unlabeled_images%}{{unlabeled_images|length}}{%else%}0{%endif%}"
+                        max="{{total}}" style="width: 225px;"></progress>
+                </div>
+                <div class="Unlabelresult">
+                    {%if unlabeled_images%}
+                    {{unlabeled_images|length}}
+                    {%else%}
+                    0
+                    {%endif%}
+                </div>
+            </button>
         </div>
     </div>
     <div class="frame">
         <h1>Label</h1>
+        <div class="trainB">
+            <input type="button" value="Train">
+        </div>
+        <div class="back">
+            <div class="Trainmodal1">
+                <div class="Traintxt1">
+                    <span style="color: black;">Do you really want to</span>
+                    <span style="color: #d5c9dd;">Train</span>
+                    <span style="color: black;">?</span>
+                </div>
+                <form name="Train" action="/train/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="userid" value="{{userid}}">
+                    <input class="yes" type="button" value="Yes">
+                <input class="no" type="button" value="No">
+                </form>
+                
+            </div>
+            <div class="Trainmodal2">
+                <div class="Traintxt2">
+                    Please wait...
+                </div>
+                <div id="loading">
+                    <img src="{% static 'loading.gif' %}" style="width:80px;height:80px">
+                </div>
+                <div class="Trainmodal2x">
+                    <input type="button" value="x">
+                </div>
+            </div>
+            <div class="Trainmodal3">
+                <div class="Traintxt3">
+                    Train is done!
+                    <br>
+                    check out the results
+                    <br>
+                    on the
+                    <span style="color: #d5c9dd;">Train page</span>
+                </div>
+                <input class="ok" type="button" value="Ok">
+                <div class="Trainmodal3x">
+                    <input type="button" value="x">
+                </div>
+            </div>
+        </div>
         <div class="Sort">
             <input type="button" value="Sort" id="Sort">
         </div>
         <div class="Sortmodal">
-            <input type="radio" name="sort" value="Labeling" id="Labeling" checked><span
-                class="Labeling-text">Label</span>
+            <button type="button" id="ascendingB" onclick="location.href='/label/?sort=ascending'">
+                <div class="ascendingbox">
+                    <img src="{% static 'ascending.png' %}" style="width:40px;height:40px" id="ascendingicon">
+                </div>
+                <div class="ascendingtxt">
+                    Sort Oldest to Newest
+                </div>
+            </button>
             <br>
-            <input type="radio" name="sort" value="Date" id="Date"><span class="Date-text">Date</span>
+            <button type="button" id="descendingB" onclick="location.href='/label/?sort=descending'">
+                <div class="descendingbox">
+                    <img src="{% static 'descending.png' %}" style="width:40px;height:40px" id="descendingicon">
+                </div>
+                <div class="descendingtxt">
+                    Sort Newest to Oldest
+                </div>
+            </button>
             <div class="Sortx">
                 <input type="button" value="x">
             </div>
@@ -106,7 +198,7 @@
                     <div class="imagetxt2">
                         Import images from your computer.
                     </div>
-                </button>
+                    </button>
             </div>
             <div class="Camera">
                 <button type="button" id="cameraB" onclick="location.href='/cam'">
@@ -128,40 +220,136 @@
         </div>
 
         <!--image-->
-        <div id="labeltitle1">
-            <h2>label_title</h2>
-            <div id="labelcount1">
-                0
+        <div class="labelwrap">
+            <div id="labeltitle1">
+                <form action="/label/change/" method="POST">
+                    <input type="text" placeholder="{{label1}}" name="label1" id="label1">
+                    <span id="labelcount1">
+                        {%if label1_images%}
+                        {{label1_images|length}}
+                        {%else%}
+                        0
+                        {%endif%}
+                    </span>
+                </form>
+
             </div>
-        </div>
-
-        <div class="labeled">
-
-        </div>
-
-        <div id="unlabeltitle">
-            <h2>Unlabeled</h2>
-            <div id="unlabelcount">
-                {%if images%}
-                {{images|length}}
-                {%else%}
-                0
-                {%endif%}
+            <div class="labeled1">
+                {%for image in label1_images %}
+                <div class="imgdiv">
+                    <form action="/image/delete/" class="deleteImage" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                        <button class="imgx" type="button"
+                            onclick="if(window.confirm('Are you sure delete?')){this.form.submit();}">
+                            <img src="{% static 'delete.png' %}" style="width:30px;height:30px" id="deleteicon">
+                        </button>
+                    </form>
+                    <form action="/image/update/" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                        <div id="select">
+                            <select name="label" onchange="this.form.submit()">
+                                <option value="{{label1}}" selected>{{label1}}</option>
+                                <option value="{{label2}}">{{label2}}</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div>
+                        <button type="button" class="imgbutton">
+                            <image src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180"
+                                id="img" />
+                        </button>
+                    </div>
+                    <!-- <p>{{image.userid}}</p> -->
+                </div>
+                {%endfor%}
             </div>
-        </div>
+            <div id="labeltitle2">
+                <form action="/label/change/" method="POST">
+                    <input type="text" placeholder="{{label2}}" name="label2">
+                    <span id="labelcount2">
+                        {%if label2_images%}
+                        {{label2_images|length}}
+                        {%else%}
+                        0
+                        {%endif%}
+                    </span>
+                </form>
 
-        <div class="unlabel">
-            {%for image in images %}
-            <div>
-                <button type="button" class="imgbutton">
-                    <image src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180" id="img" />
-                </button>
-                <!-- <p>{{image.userid}}</p> -->
             </div>
-            {%endfor%}
+            <div class="labeled2">
+                {%for image in label2_images %}
+                <div class="imgdiv">
+                    <form action="/image/delete/" class="deleteImage" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                        <button class="imgx" type="button" value="x"
+                            onclick="if(window.confirm('Are you sure delete?')){this.form.submit();}">
+                            <img src="{% static 'delete.png' %}" style="width:30px;height:30px" id="deleteicon">
+                        </button>
+                    </form>
+                    <form action="/image/update/" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                        <div id="select">
+                            <select name="label" onchange="this.form.submit()">
+                                <option value="{{label2}}" selected>{{label2}}</option>
+                                <option value="{{label1}}">{{label1}}</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div>
+                        <button type="button" class="imgbutton">
+                            <image src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180"
+                                id="img" />
+                        </button>
+                    </div>
+                    <!-- <p>{{image.userid}}</p> -->
+                </div>
+                {%endfor%}
+            </div>
+
+            <div id="unlabeltitle">
+                <h2>Unlabeled</h2>
+                <span id="unlabelcount">
+                    {%if unlabeled_images%}
+                    {{unlabeled_images|length}}
+                    {%else%}
+                    0
+                    {%endif%}
+                </span>
+            </div>
+
+            <div class="unlabel">
+                {%for image in unlabeled_images %}
+                <div class="imgdiv">
+                    <form action="/image/delete/" class="deleteImage" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                        <button class="imgx" type="button" value="x"
+                            onclick="if(window.confirm('Are you sure delete?')){this.form.submit();}">
+                            <img src="{% static 'delete.png' %}" style="width:30px;height:30px" id="deleteicon">
+                        </button>
+                    </form>
+
+                    <form action="/image/update/" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                        <div id="select">
+                            <select name="label" onchange="this.form.submit()">
+                                <option selected disabled>Unlabeled</option>
+                                <option value="{{label1}}">{{label1}}</option>
+                                <option value="{{label2}}">{{label2}}</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div>
+                        <button type="button" class="imgbutton">
+                            <image src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180"
+                                id="img" />
+                        </button>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+
         </div>
     </div>
     <script type="text/javascript" src="{% static 'label.js' %}"></script>
 </body>
-
 </html>
