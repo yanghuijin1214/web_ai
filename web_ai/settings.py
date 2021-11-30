@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'numpy',
     'torchvision',
     'torchsummary',
-
+    'mathfilters'
 ]
 
 MIDDLEWARE = [

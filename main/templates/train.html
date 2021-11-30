@@ -1,6 +1,8 @@
 {% load static %}
+{% load mathfilters %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +10,7 @@
     <title>TRAIN</title>
     <link rel="stylesheet" href="{% static 'train.css' %}">
 </head>
+
 <body>
     <div class="bar">
         <div class="Userimg">
@@ -17,7 +20,8 @@
             <u>{{userid}}</u>
         </div>
         <div class="Setting">
-            <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png' %}" style="width: 30px; height: 30px">
+            <button type="button" id="setting" onclick="location.href='/setting'"> <img
+                    src="{% static 'setting_img.png' %}" style="width: 30px; height: 30px">
         </div>
         <div class="Logout">
             <input type="button" value="logout" onclick="location.href='/logout'">
@@ -40,10 +44,10 @@
                     All Images
                 </div>
                 <div class="Allprog">
-                    <progress value="{{total}}" max="{{total}}" style="width: 225px; "></progress>
+                    <progress value="{{label1_correct|add:label2_correct}}" max="{{total_len}}" style="width: 225px; "></progress>
                 </div>
                 <div class="Allresult">
-                    {{total}}
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
                 </div>
             </button>
         </div>
@@ -54,13 +58,13 @@
                 </div>
                 <div class="Result1">
                     {%if label1_images%}
-                    {{label1_images|length}}
+                    {{label1_correct|div:label1_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog1">
-                    <progress value="{%if label1_images%}{{label1_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                    <progress value="{%if label1_images%}{{label1_correct}}{%else%}0{%endif%}" max="{{label1_len}}"
                         style="width: 225px;"></progress>
                 </div>
             </button>
@@ -72,13 +76,13 @@
                 </div>
                 <div class="Result2">
                     {%if label2_images%}
-                    {{label2_images|length}}
+                    {{label2_correct|div:label2_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog2">
-                    <progress value="{%if label2_images%}{{label2_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                    <progress value="{%if label2_images%}{{label2_correct}}{%else%}0{%endif%}" max="{{label2_len}}"
                         style="width: 225px;"></progress>
                 </div>
             </button>
@@ -86,7 +90,7 @@
         <div class="accuracy">
             <button type="button" class="accuracyB">
                 <span class="percent">
-                    100%
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
                 </span>
                 <span class="accuracytxt">
                     of images are predicted correctly
@@ -112,8 +116,8 @@
         <div class="Sort">
             <input type="button" value="Sort" id="Sort">
         </div>
-        <div class="Sortmodal" >
-            <button type="button" id="ascendingB" >
+        <div class="Sortmodal">
+            <button type="button" id="ascendingB"  onclick="location.href='/train/?sort=ascending'">
                 <div class="ascendingbox">
                     <img src="{% static 'ascending.png' %}" style="width:40px;height:40px" id="ascendingicon">
                 </div>
@@ -122,7 +126,7 @@
                 </div>
             </button>
             <br>
-            <button type="button" id="descendingB" >
+            <button type="button" id="descendingB" onclick="location.href='/train/?sort=descending'">
                 <div class="descendingbox">
                     <img src="{% static 'descending.png' %}" style="width:40px;height:40px" id="descendingicon">
                 </div>
@@ -130,7 +134,7 @@
                     Sort Newest to Oldest
                 </div>
             </button>
-            <button type="button" id="correctB">
+            <button type="button" id="correctB" onclick="location.href='/train/?sort=correct'">
                 <div class="correctbox">
                     <img src="{% static 'correct.png' %}" style="width:35px;height:35px" id="correcticon">
                 </div>
@@ -138,7 +142,7 @@
                     Sort Correct to Incorrect
                 </div>
             </button>
-            <button type="button" id="incorrectB">
+            <button type="button" id="incorrectB" onclick="location.href='/train/?sort=incorrect'">
                 <div class="incorrectbox">
                     <img src="{% static 'incorrect.png' %}" style="width:35px;height:35px" id="incorrecticon">
                 </div>
@@ -155,32 +159,122 @@
             <div id="Allimagestitle">
                 <h2>All images</h2>
                 <span id="Allimagescount">
-                    0
+                    {{total_len}}
                 </span>
             </div>
             <div class="Allimages">
-                
+                {%for image in all %}
+                <div class="imgdiv">
+                    <form action="/image/update/" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                    </form>
+
+                    {%if image.predict == "0" and image.labeling_int == 0%}
+                    <div id="correct">
+                        {{label1}}
+                        <img src="{% static 'correct.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%elif image.predict == "1" and image.labeling_int == 1%}
+                    <div id="correct">
+                        {{label2}}
+                        <img src="{% static 'correct.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%elif image.predict == "0" and image.labeling_int == 1%}
+                    <div id="incorrect">
+                        {{label1}}
+                        <img src="{% static 'incorrect.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%else%}
+                    <div id="incorrect">
+                        {{label2}}
+                        <img src="{% static 'incorrect.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%endif%}
+
+                    <div>
+                        <button type="button" class="imgbutton">
+                            <img src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180"
+                                id="img" />
+                        </button>
+                    </div>
+                    <!-- <p>{{image.userid}}</p> -->
+                </div>
+                {%endfor%}
+
             </div>
             <div id="labeltitle1">
                 <h2>{{label1}}</h2>
                 <span id="labelcount1">
-                    {{label1_correct}} / {{label1_len}}
+                    {{label1_len}}
                 </span>
             </div>
             <div class="labeled1">
-                
+                {%for image in label1_images %}
+                <div class="imgdiv">
+                    <form action="/image/update/" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                    </form>
+
+                    {%if image.predict == "0" %}
+                    <div id="correct">
+                        {{label1}}
+                        <img src="{% static 'correct.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%else%}
+                    <div id="incorrect">
+                        {{label2}}
+                        <img src="{% static 'incorrect.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%endif%}
+
+                    <div>
+                        <button type="button" class="imgbutton">
+                            <img src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180"
+                                id="img" />
+                        </button>
+                    </div>
+                    <!-- <p>{{image.userid}}</p> -->
+                </div>
+                {%endfor%}
             </div>
             <div id="labeltitle2">
                 <h2>{{label2}}</h2>
                 <span id="labelcount2">
-                    {{label2_correct}} /{{label2_len}}
+                    {{label2_len}}
                 </span>
             </div>
             <div class="labeled2">
-                
+                {%for image in label2_images %}
+                <div class="imgdiv">
+                    <form action="/image/update/" method="POST">
+                        <input type="hidden" name="image_name" value="{{image.image_name}}">
+                    </form>
+
+                    {%if image.predict == "0" %}
+                    <div id="incorrect">
+                        {{label1}}
+                        <img src="{% static 'incorrect.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%else%}
+                    <div id="correct">
+                        {{label2}}
+                        <img src="{% static 'correct.png' %}" style="width:20px;height:20px" id="icon">
+                    </div>
+                    {%endif%}
+
+                    <div>
+                        <button type="button" class="imgbutton">
+                            <img src="{{image.image.url}}" alt="{{image.image.url}}" width="240" height="180"
+                                id="img" />
+                        </button>
+                    </div>
+                    <!-- <p>{{image.userid}}</p> -->
+                </div>
+                {%endfor%}
             </div>
         </div>
     </div>
     <script type="text/javascript" src="{% static 'train.js' %}"></script>
 </body>
+
 </html>

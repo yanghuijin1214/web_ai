@@ -1,4 +1,5 @@
 {% load static %}
+{% load mathfilters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PREDICT</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'predict_Camera.css' %}">
 </head>
 
@@ -43,10 +45,10 @@
                     All Images
                 </div>
                 <div class="Allprog">
-                    <progress value="{{total}}" max="{{total}}" style="width: 225px; "></progress>
+                    <progress value="{{label1_correct|add:label2_correct}}" max="{{total_len}}" style="width: 225px; "></progress>
                 </div>
                 <div class="Allresult">
-                    {{total}}
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
                 </div>
             </button>
         </div>
@@ -57,13 +59,13 @@
                 </div>
                 <div class="Result1">
                     {%if label1_images%}
-                    {{label1_images|length}}
+                    {{label1_correct|div:label1_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog1">
-                    <progress value="{%if label1_images%}{{label1_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                    <progress value="{%if label1_images%}{{label1_correct}}{%else%}0{%endif%}" max="{{label1_len}}"
                         style="width: 225px;"></progress>
                 </div>
             </button>
@@ -75,15 +77,38 @@
                 </div>
                 <div class="Result2">
                     {%if label2_images%}
-                    {{label2_images|length}}
+                    {{label2_correct|div:label2_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog2">
-                    <progress value="{%if label2_images%}{{label2_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                    <progress value="{%if label2_images%}{{label2_correct}}{%else%}0{%endif%}" max="{{label2_len}}"
                         style="width: 225px;"></progress>
                 </div>
+            </button>
+        </div>
+        <div class="accuracy">
+            <button type="button" class="accuracyB">
+                <span class="percent">
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
+                </span>
+                <span class="accuracytxt">
+                    of images are predicted correctly
+                </span>
+            </button>
+        </div>
+        <div class="time">
+            <button type="button" class="timeB">
+                <span class="timetxt">
+                    It took
+                </span>
+                <span class="T">
+                    1000sec
+                </span>
+                <span class="timetxt">
+                    to predict the images
+                </span>
             </button>
         </div>
     </div>
@@ -101,6 +126,8 @@
             </div>
         </div>
         <div id="container">
+            <div id="result">hello</div>
+
             <canvas id="camera_canvas"></canvas>
             <video autoplay="true" id="videoElement"></video>
             <div class="Done">
@@ -109,10 +136,11 @@
             <button id="capture"></button>
         </div>
     </div>
+    <input id="userid" style="display:none" value="{{userid}}">
+    <img src="//:0" alt="" id="output">
+    <a id="target" style="display: none"></a>
 </body>
-<input id="userid" style="display:none" value="{{userid}}">
-<img src="//:0" alt="" id="output">
-<a id="target" style="display: none"></a>
+
 
 
 <script>
@@ -132,9 +160,12 @@
             });
     }
     capture.addEventListener("click", function () {
-        sensor.width = video.videoWidth;
-        sensor.height = video.videoHeight;
-        sensor.getContext("2d").drawImage(video, 0, 0);
+        //sensor.width = video.videoWidth;
+        sensor.width = 800;
+        //sensor.height = video.videoHeight;
+        sensor.height = 600;
+        console.log(sensor.width,sensor.height)
+        sensor.getContext("2d").drawImage(video, 0, 0,sensor.width,sensor.height);
         save(sensor);
         console.log(sensor.height);
     });
@@ -142,15 +173,16 @@
     function save(canvas) {
         var img = canvas.toDataURL('image/png');
         img = img.replace("data:image/png;base64,", "");
-
+        console.log("image save!")
         $.ajax({
             type: "POST",
-            url: "/image/save/",
+            url: "/predict/camera/",
             contentType: "application/x-www-form-urlencoded; charset=utf-8",
-            data: { "image": img, "userid": userid, labeling: "false" },
+            data: { "image": img, "userid": userid },
             dataType: "text"
-        }).success(function (o) {
-            alert('Image saved.');
+        }).success(function (result) {
+            console.log(result)
+            $("#result").html(result);
         });
     }
 

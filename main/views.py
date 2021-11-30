@@ -39,7 +39,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import copy
-import PIL
 
 from django.conf import settings
 
@@ -153,13 +152,13 @@ def modelTrain(train_loader, train_ds, userID) :
             running_loss += loss.item() * inputs.size(0)
             running_corrects += torch.sum(preds == labels.data)
             
-            # try:
-            #     image=Image.objects.get(image_name=name)
-            #     image.training=True
-            #     image.predict=preds
-            #     image.save()
-            # except:
-            #     pass
+            try:
+                image=Image.objects.get(image_name=name)
+                image.training=True
+                image.predict=preds
+                image.save()
+            except:
+                pass
 
         epoch_loss = running_loss / len(train_ds)
         epoch_acc = running_corrects / len(train_ds) * 100.
@@ -220,6 +219,8 @@ def label(request):
 @login_check
 def train(request):
     if request.method=='GET':
+        a=request.GET.get('sort',None)
+
         user_id=request.session.get('user')
         try:
             user = User.objects.get(user_id=user_id)
@@ -228,22 +229,40 @@ def train(request):
         except:
             return render(request,'train.html',{'userid':user_id})
 
-        total=len(images)
+        images=images.order_by('-upload_date')
         label1_images=images.filter(labeling_int=0).order_by('-upload_date')
         label2_images=images.filter(labeling_int=1).order_by('-upload_date')
-        
+
+        #개수
+        total=len(images)
         label1_len=len(label1_images)
         label2_len=len(label2_images)
 
-        label1_correct=len(label1_images.filter(predict=0))
-        label2_correct=len(label2_images.filter(predict=1))
+        label1_correct=len(label1_images.filter(predict="0"))
+        label2_correct=len(label2_images.filter(predict="1"))
+        total_correct=label1_correct+label2_correct 
 
-        total_correct=label1_correct+label2_correct    
+        if a=='ascending':
+            images=images.order_by('upload_date')
+            label1_images=label1_images.order_by('upload_date')
+            label2_images=label2_images.order_by('upload_date')
+        elif a=='correct':
+            print("im here")
+            label1_images=label1_images.filter(predict="0")
+            label2_images=label2_images.filter(predict="1")
+
+            images=label1_images|label2_images
+        elif a=='incorrect':
+            label1_images=label1_images.filter(predict="1")
+            label2_images=label2_images.filter(predict="0")
+
+            images=label1_images|label2_images
 
         return render(request,'train.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,
         'all':images,'total_len':total,'total_correct':total_correct,
         'label1_images':label1_images,'label1_len':label1_len,'label1_correct':label1_correct,
         'label2_images':label2_images,'label2_len':label2_len,'label2_correct':label2_correct})
+
     elif request.method =='POST':
         #body=json.loads(request.body.decode('utf-8'))
         user_id=request.POST.get('userid')
@@ -267,17 +286,81 @@ def train(request):
 @login_check
 def predict_image(request):
     user_id=request.session.get('user')
-    return render(request,'predict_Images.html',{'userid':user_id})
+    try:
+        user = User.objects.get(user_id=user_id)
+        images=Image.objects.filter(user=user,labeling=True,training=True)
+    except:
+        return render(request,'predict_Images.html',{'userid':user_id})
 
+    label1_images=images.filter(labeling_int=0)
+    label2_images=images.filter(labeling_int=1)
+
+    #개수
+    total=len(images)
+    label1_len=len(label1_images)
+    label2_len=len(label2_images)
+
+    label1_correct=len(label1_images.filter(predict="0"))
+    label2_correct=len(label2_images.filter(predict="1"))
+    total_correct=label1_correct+label2_correct 
+
+    return render(request,'predict_Images.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,
+    'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
+
+@csrf_exempt
 @login_check
 def predict_camera(request):
-    user_id=request.session.get('user')
-    return render(request,'predict_Camera.html',{'userid':user_id})
+    if request.method=='GET':
+        user_id=request.session.get('user')
+
+        try:
+            user = User.objects.get(user_id=user_id)
+            images=Image.objects.filter(user=user,labeling=True,training=True)
+        except:
+            return render(request,'predict_Images.html',{'userid':user_id})
+
+        label1_images=images.filter(labeling_int=0)
+        label2_images=images.filter(labeling_int=1)
+
+        #개수
+        total=len(images)
+        label1_len=len(label1_images)
+        label2_len=len(label2_images)
+
+        label1_correct=len(label1_images.filter(predict="0"))
+        label2_correct=len(label2_images.filter(predict="1"))
+        total_correct=label1_correct+label2_correct
+
+        return render(request,'predict_Camera.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,
+    'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
+    elif request.method=='POST':
+        user_id=request.session.get('user')
+
+        return HttpResponse("Banana",status=200)        
 
 @login_check
 def predict_export(request):
     user_id=request.session.get('user')
-    return render(request,'predict_Export.html',{'userid':user_id})
+    try:
+        user = User.objects.get(user_id=user_id)
+        images=Image.objects.filter(user=user,labeling=True,training=True)
+    except:
+        return render(request,'predict_Images.html',{'userid':user_id})
+
+    label1_images=images.filter(labeling_int=0)
+    label2_images=images.filter(labeling_int=1)
+
+    #개수
+    total=len(images)
+    label1_len=len(label1_images)
+    label2_len=len(label2_images)
+
+    label1_correct=len(label1_images.filter(predict="0"))
+    label2_correct=len(label2_images.filter(predict="1"))
+    total_correct=label1_correct+label2_correct
+
+    return render(request,'predict_Export.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,
+    'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
 
 
 @csrf_exempt
@@ -339,7 +422,7 @@ def delete(request):
         img_name=request.POST.get('image_name')
         #image delete
         try:
-            user=User.get(user_id=user_id)
+            user=User.objects.get(user_id=user_id)
             Image.objects.get(user=user,image_name=img_name).delete()
         except:
             pass

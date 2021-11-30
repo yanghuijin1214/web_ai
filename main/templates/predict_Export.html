@@ -1,4 +1,5 @@
 {% load static %}
+{% load mathfilters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,10 +41,10 @@
                     All Images
                 </div>
                 <div class="Allprog">
-                    <progress value="{{total}}" max="{{total}}" style="width: 225px; "></progress>
+                    <progress value="{{label1_correct|add:label2_correct}}" max="{{total_len}}" style="width: 225px; "></progress>
                 </div>
                 <div class="Allresult">
-                    {{total}}
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
                 </div>
             </button>
         </div>
@@ -54,13 +55,13 @@
                 </div>
                 <div class="Result1">
                     {%if label1_images%}
-                    {{label1_images|length}}
+                    {{label1_correct|div:label1_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog1">
-                    <progress value="{%if label1_images%}{{label1_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                    <progress value="{%if label1_images%}{{label1_correct}}{%else%}0{%endif%}" max="{{label1_len}}"
                         style="width: 225px;"></progress>
                 </div>
             </button>
@@ -72,15 +73,38 @@
                 </div>
                 <div class="Result2">
                     {%if label2_images%}
-                    {{label2_images|length}}
+                    {{label2_correct|div:label2_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog2">
-                    <progress value="{%if label2_images%}{{label2_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                    <progress value="{%if label2_images%}{{label2_correct}}{%else%}0{%endif%}" max="{{label2_len}}"
                         style="width: 225px;"></progress>
                 </div>
+            </button>
+        </div>
+        <div class="accuracy">
+            <button type="button" class="accuracyB">
+                <span class="percent">
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
+                </span>
+                <span class="accuracytxt">
+                    of images are predicted correctly
+                </span>
+            </button>
+        </div>
+        <div class="time">
+            <button type="button" class="timeB">
+                <span class="timetxt">
+                    It took
+                </span>
+                <span class="T">
+                    1000sec
+                </span>
+                <span class="timetxt">
+                    to predict the images
+                </span>
             </button>
         </div>
     </div>
