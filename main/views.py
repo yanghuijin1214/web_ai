@@ -39,7 +39,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import copy
-import PIL
 
 from django.conf import settings
 
@@ -269,10 +268,16 @@ def predict_image(request):
     user_id=request.session.get('user')
     return render(request,'predict_Images.html',{'userid':user_id})
 
+@csrf_exempt
 @login_check
 def predict_camera(request):
-    user_id=request.session.get('user')
-    return render(request,'predict_Camera.html',{'userid':user_id})
+    if request.method=='GET':
+        user_id=request.session.get('user')
+        return render(request,'predict_Camera.html',{'userid':user_id})
+    elif request.method=='POST':
+        user_id=request.session.get('user')
+
+        return HttpResponse("Banana",status=200)        
 
 @login_check
 def predict_export(request):

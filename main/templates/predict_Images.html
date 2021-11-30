@@ -7,6 +7,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PREDICT</title>
     <link rel="stylesheet" href="{% static 'predict_Images.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+        #drag{
+            position:absolute;
+            top:30%;
+        }
+        #image_drop_area{
+        
+        width: 300px;
+        height: 169px;
+        border: 1px solid black;
+        background-position: center;
+        background-size: cover; 
+        box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
     <div class="bar">
@@ -97,6 +113,64 @@
                 <input type="button" value="Export" onclick="location.href='/predict/export'">
             </div>
         </div>
+        <div id="drag">
+            <p>Drag and drop an image into the box</p>
+            <div id="image_drop_area"></div>
+            <p id="file_name"></p>
+            <div id="result">hello</div>
+        </div>
+        <input id="userid" style="display:none" value="{{userid}}">
     </div>
 </body>
+<script>
+    const image_drop_area = document.querySelector("#image_drop_area");
+    var uploaded_image;
+    var userid = document.querySelector('#userid').value;
+
+    // Event listener for dragging the image over the div
+    image_drop_area.addEventListener('dragover', (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    // Style the drag-and-drop as a "copy file" operation.
+    event.dataTransfer.dropEffect = 'copy';
+    });
+
+    // Event listener for dropping the image inside the div
+    image_drop_area.addEventListener('drop', (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    fileList = event.dataTransfer.files;
+
+    document.querySelector("#file_name").textContent = fileList[0].name;
+    
+    readImage(fileList[0]);
+    });
+
+    // Converts the image into a data URI
+    readImage = (file) => {
+    const reader = new FileReader();
+    reader.onload=function(e){
+        var base64data=reader.result;
+        console.log(base64data);
+        img = base64data.replace("data:image/png;base64,", "");
+        $.ajax({
+            type: "POST",
+            url: "/predict/camera/",
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            data: { "image": img, "userid": userid },
+            dataType: "text"
+        }).success(function (result) {
+            console.log(result)
+            $("#result").html(result);
+        });
+
+    }
+    console.log(file);
+    reader.addEventListener('load', (event) => {
+        uploaded_image = event.target.result;
+        document.querySelector("#image_drop_area").style.backgroundImage = `url(${uploaded_image})`;
+    });
+    reader.readAsDataURL(file);
+    }
+    </script>
 </html>

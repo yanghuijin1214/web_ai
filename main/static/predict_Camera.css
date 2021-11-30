@@ -396,8 +396,9 @@ h1{
 }
 
 #camera_canvas {
-    z-index: -1000;
-    display: none
+    z-index: 1000;
+    
+    /* display: none */
 }
 
 #videoElement {
