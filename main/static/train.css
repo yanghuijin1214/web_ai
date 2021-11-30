@@ -168,7 +168,7 @@ progress::-webkit-progress-bar {
     border-radius: 5px;
     border: none;
     width: 150px;
-    height: 50px;
+    height: 40px;
     font-size: 1.2em;
 }
 
@@ -311,11 +311,68 @@ progress::-webkit-progress-bar {
     cursor: pointer;
 }
 
+.accuracy{
+    position: absolute;
+    left: 36px;
+    bottom: 80px;
+    width: 225px;
+    display: block;
+}
+
+.accuracyB{
+    border-radius: 5px;
+    border: none;
+    background-color: white;
+}
+
+.percent{
+    font-size: 1.5em;
+    color: #d5c9dd;
+}
+
+.accuracytxt{
+    font-size: 1.5em;
+}
+
+.accuracyB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.07);
+}
+
+.time{
+    position: absolute;
+    left: 36px;
+    bottom: 80px;
+    width: 225px;
+    display: none;
+}
+
+.timeB{
+    border-radius: 5px;
+    border: none;
+    background-color: white;
+}
+
+.T{
+    font-size: 1.5em;
+    color: #d5c9dd;
+}
+
+.timetxt{
+    font-size: 1.5em;
+}
+
+.timeB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.07);
+}
+
+/*frame*/
 .Sort{
     position: absolute;
     top: 25px;
     /*left: 1000px;*/
-    right: 450px;
+    right: 350px;
 }
 
 .Sort input{
@@ -333,28 +390,6 @@ progress::-webkit-progress-bar {
     cursor: pointer;
 }
 
-.Import{
-    position: absolute;
-    top: 25px;
-    /*left: 1100px;*/
-    right: 350px;
-}
-
-.Import input{
-    border-radius: 15px;
-    border: none;
-    width: 80px;
-    height: 45px;
-    background-color: rgba(0,0,0,0.07);
-    font-weight: bold;
-    font-size: 1em;
-}
-
-.Import input:hover{
-    background-color: rgba(0,0,0,0.1);
-    cursor: pointer;
-}
-
 h1{
     position: absolute;
     left: 50px;
@@ -364,16 +399,188 @@ h1{
     display: none;
     background-color: white;
     width: 350px;
-    height: 175px;
+    height: 310px;
     border-radius: 20px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
     font-size: 15px;
   
     position: absolute;
     top: 85px;
-    /*left: 948px;*/
-    right: 450px;
+    /*left: 777px;*/
+    right: 350px;
     z-index: 5;
+}
+
+#ascendingB{
+    border: none;
+    background: none;
+    position: absolute;
+    position: absolute;
+    top: 33px;
+    left: 22px;
+    border-radius: 15px;
+    
+    width: 300px;
+    height: 60px;
+    background-color:white;
+}   
+
+.ascendingbox{
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: #D5C9DD;
+    position: absolute;
+    top: 8px;
+    left: 10px;
+}
+
+#ascendingicon{
+    position: absolute;
+    left: 3px;
+    top: 2px;
+}
+
+.ascendingtxt{
+    font-size: 20px;
+    position: absolute;
+    width: 200px;
+    top: 20px;
+    left: 70px;
+}
+
+#ascendingB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.1);
+}
+
+#descendingB{
+    border: none;
+    background: none;
+    position: absolute;
+    position: absolute;
+    top: 100px;
+    left: 22px;
+    border-radius: 15px;
+    
+    width: 300px;
+    height: 60px;
+    background-color:white;
+}
+
+#descendingicon{
+    position: absolute;
+    left: 3px;
+    top: 2px;
+}
+
+.descendingbox{
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: #D5C9DD;
+    position: absolute;
+    top: 8px;
+    left: 10px
+}
+
+.descendingtxt{
+    font-size: 20px;
+    position: absolute;
+    width: 200px;
+    top: 20px;
+    left: 70px;
+}
+
+#descendingB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.1);
+}
+
+#correctB{
+    border: none;
+    background: none;
+    position: absolute;
+    position: absolute;
+    top: 167px;
+    left: 22px;
+    border-radius: 15px;
+    
+    width: 300px;
+    height: 60px;
+    background-color:white;
+}
+
+#correcticon{
+    position: absolute;
+    left: 5px;
+    top: 4px;
+}
+
+.correctbox{
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: #D5C9DD;
+    position: absolute;
+    top: 8px;
+    left: 10px
+}
+
+.correcttxt{
+    font-size: 20px;
+    position: absolute;
+    width: 250px;
+    top: 20px;
+    left: 50px;
+}
+
+#correctB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.1);
+}
+
+#incorrectB{
+    border: none;
+    background: none;
+    position: absolute;
+    position: absolute;
+    top: 234px;
+    left: 22px;
+    border-radius: 15px;
+    
+    width: 300px;
+    height: 60px;
+    background-color:white;
+}
+
+#incorrecticon{
+    position: absolute;
+    left: 5px;
+    top: 4px;
+}
+
+.incorrectbox{
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: #D5C9DD;
+    position: absolute;
+    top: 8px;
+    left: 10px
+}
+
+.incorrecttxt{
+    font-size: 20px;
+    position: absolute;
+    width: 250px;
+    top: 20px;
+    left: 50px;
+}
+
+#incorrectB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.1);
 }
 
 .Sortx input{
@@ -388,171 +595,6 @@ h1{
 }
 
 .Sortx input:hover{
-    cursor: pointer;
-}
-
-#Labeling{
-    position: absolute;
-    top: 34%;
-    left: 7%;
-}
-
-.Labeling-text{
-    position: absolute;
-    top: 30%;
-    left: 35%;
-}
-
-#Date{
-    position: absolute;
-    top: 62%;
-    left: 7%;
-}
-
-.Date-text{
-    position:absolute;
-    top: 59%;
-    left: 35%;
-}
-
-.Importmodal{
-    background-color: white;
-    width: 400px;
-    height: 180px;
-    position: absolute;
-    top: 85px;
-    /*left: 777px;*/
-    right: 350px;
-    border-radius: 20px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
-    display: none;
-    z-index: 5;
-}
-
-#file{
-    display: none;
-}
-
-.ImagesB{
-    position: absolute;
-    top: 33px;
-    left: 22px;
-    
-}
-
-#imagesB{
-    border-radius: 15px;
-    border: none;
-    width: 350px;
-    height: 60px;
-    background-color:white;
-    position: absolute;
-    top: 33px;
-    left: 22px;
-}
-
-#imagesB:hover{
-    cursor: pointer;
-    background-color: rgba(0,0,0,0.1);
-}
-
-.imagebox{
-    position: absolute;
-    top: 7px;
-    left: 8px;
-    width: 45px;
-    height: 45px;
-    border-radius: 15px;
-    background-color: #D5C9DD;
-}
-
-#imageicon{
-    position: absolute;
-    top: 7.3px;
-    left: 7.6px;
-}
-
-.imagetxt1{
-    position: absolute;
-    top: 6px;
-    left: 70px;
-    font-size: 20px;
-}
-
-.imagetxt2{
-    position: absolute;
-    top: 31px;
-    left: 70px;
-    font-size: 16px;
-    color: rgba(0,0,0,0.6);
-}
-
-.CameraB{
-    position: absolute;
-    top: 105px;
-    left: 22px;
-}
-
-#cameraB{
-    position: absolute;
-    top: 105px;
-    left: 22px;
-    border-radius: 15px;
-    border: none;
-    width: 350px;
-    height: 60px;
-    background-color: white;
-}
-
-#cameraB:hover{
-    cursor: pointer;
-    background-color: rgba(0,0,0,0.1);
-}
-
-.camerabox{
-    position: absolute;
-    top: 7px;
-    left: 8px;
-    width: 45px;
-    height: 45px;
-    border-radius: 15px;
-    background-color: #D5C9DD;
-}
-
-#cameraicon{
-    position: absolute;
-    top: 7.3px;
-    left: 7.6px;
-}
-
-.cameratxt1{
-    position: absolute;
-    top: 6px;
-    left: 70px;
-    font-size: 20px;
-}
-
-.cameratxt2{
-    position: absolute;
-    top: 31px;
-    left: 70px;
-    font-size: 16px;
-    color: rgba(0,0,0,0.6);
-}
-
-.Importx input{
-    background: none;
-    border: none;
-    color: rgba(0,0,0,0.6);
-    font-size: 20px;
-    font-weight: bold;
-    position: absolute;
-    top: 5px;
-    left: 365px;
-
-}
-
-.Importx input:hover{
     cursor: pointer;
 }
 

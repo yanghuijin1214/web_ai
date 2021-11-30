@@ -19,7 +19,7 @@ class Label(models.Model):
     label2=models.CharField(max_length=50,default="Label 2",verbose_name="라벨링2 이름")
 
     def __str__(self):
-        return self.user
+        return self.user.user_id
 
     class Meta:
         db_table = 'Label'

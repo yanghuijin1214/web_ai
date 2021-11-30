@@ -7,13 +7,16 @@ from login.models import User
 # Create your models here.
 
 class Image(models.Model):
-    user_id=models.CharField(max_length=32,verbose_name="사용자 아이디")
+    user=models.ForeignKey(User,verbose_name="user",on_delete=models.CASCADE)
+    #user_id=models.CharField(max_length=32,verbose_name="사용자 아이디")
     upload_date=models.DateTimeField(auto_now_add=True,verbose_name="업로드시간")
     image_name=models.CharField(max_length=50,verbose_name="이미지명")
     image=models.ImageField(upload_to="image/",verbose_name="image")
     labeling=models.BooleanField(default=False,verbose_name="라벨링 여부")
-    labeling_name=models.CharField(max_length=50,verbose_name="라벨링명")
-    training=models.BooleanField(default=False,verbose_name="학습 여부")
+    labeling_name=models.CharField(max_length=50,verbose_name="라벨링명",null=True)
+    labeling_int=models.IntegerField(default=-1,verbose_name="라벨링 숫자") # -1 : unlabeled , 0 : label 1 , 1 : label2
+    training=models.BooleanField(default=False,verbose_name="학습 여부") 
+    predict=models.CharField(max_length=50,verbose_name="예측결과",default="",null=True)
 
     def __str__(self):
         return self.image_name

@@ -369,7 +369,7 @@ progress::-webkit-progress-bar {
     border-radius: 5px;
     border: none;
     width: 150px;
-    height: 50px;
+    height: 40px;
     font-size: 1.2em;
 }
 
@@ -960,7 +960,7 @@ h1{
 }
 
 #unlabeltitle{
-    display: inline;
+    
     margin: 1.5em;
 }
 

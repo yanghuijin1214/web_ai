@@ -39,7 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'login'
+    'login',
+    'torch',
+    'numpy',
+    'torchvision',
+    'torchsummary',
+
 ]
 
 MIDDLEWARE = [
@@ -51,6 +56,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_COOKIE_AGE=1200 #30분
+SESSION_SAVE_EVERY_REQUEST=True
 
 ROOT_URLCONF = 'web_ai.urls'
 
@@ -126,13 +134,21 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+STATIC_ROOT=os.path.join(BASE_DIR,'')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-
 
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+#MYDIR = os.path.dirname(__file__)
+MYDIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+os.path.join(PROJECT_ROOT,"static/media/image/")

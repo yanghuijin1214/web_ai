@@ -32,7 +32,7 @@
             <input type="button" value="Train" onclick="location.href='/train'">
         </div>
         <div class="Predict">
-            <input type="button" value="Predict" onclick="location.href='/predict/image'">
+            <input type="button" value="Predict" onclick="location.href='/predict/camera'">
         </div>
         <div class="All">
             <button type="button" id="Allb">
@@ -83,6 +83,29 @@
                 </div>
             </button>
         </div>
+        <div class="accuracy">
+            <button type="button" class="accuracyB">
+                <span class="percent">
+                    100%
+                </span>
+                <span class="accuracytxt">
+                    of images are predicted correctly
+                </span>
+            </button>
+        </div>
+        <div class="time">
+            <button type="button" class="timeB">
+                <span class="timetxt">
+                    It took
+                </span>
+                <span class="T">
+                    1000sec
+                </span>
+                <span class="timetxt">
+                    to predict the images
+                </span>
+            </button>
+        </div>
     </div>
     <div class="frame">
         <h1>Train</h1>
@@ -90,50 +113,44 @@
             <input type="button" value="Sort" id="Sort">
         </div>
         <div class="Sortmodal" >
+            <button type="button" id="ascendingB" >
+                <div class="ascendingbox">
+                    <img src="{% static 'ascending.png' %}" style="width:40px;height:40px" id="ascendingicon">
+                </div>
+                <div class="ascendingtxt">
+                    Sort Oldest to Newest
+                </div>
+            </button>
+            <br>
+            <button type="button" id="descendingB" >
+                <div class="descendingbox">
+                    <img src="{% static 'descending.png' %}" style="width:40px;height:40px" id="descendingicon">
+                </div>
+                <div class="descendingtxt">
+                    Sort Newest to Oldest
+                </div>
+            </button>
+            <button type="button" id="correctB">
+                <div class="correctbox">
+                    <img src="{% static 'correct.png' %}" style="width:35px;height:35px" id="correcticon">
+                </div>
+                <div class="correcttxt">
+                    Sort Correct to Incorrect
+                </div>
+            </button>
+            <button type="button" id="incorrectB">
+                <div class="incorrectbox">
+                    <img src="{% static 'incorrect.png' %}" style="width:35px;height:35px" id="incorrecticon">
+                </div>
+                <div class="incorrecttxt">
+                    Sort Incorrect to Correct
+                </div>
+            </button>
             <div class="Sortx">
                 <input type="button" value="x">
             </div>
         </div>
-        <div class="Import">
-            <input type="button" value="Import">
-        </div>
-        <div class="Importmodal">
-            <div class="Images">
-                <form name="imageForm" method="POST" enctype="multipart/form-data" action="/image/upload/">
-                    {% csrf_token %}
-                    <input type="file" id="file" name="file" onchange="changeValue(this)">
-                </form>
-                <label id="imagesB" for="file">
-                    <div class="imagebox">
-                        <img src="{% static 'image.png' %}" style="width:30px;height:30px" id="imageicon">
-                    </div>
-                    <div class="imagetxt1">
-                        Images
-                    </div>
-                    <br>
-                    <div class="imagetxt2">
-                        Import images from your computer.
-                    </div>
-                    </button>
-            </div>
-            <div class="Camera">
-                <button type="button" id="cameraB" onclick="location.href='/cam'">
-                    <div class="camerabox">
-                        <img src="{% static 'camera.png' %}" style="width:30px;height:30px" id="cameraicon">
-                    </div>
-                    <div class="cameratxt1">
-                        Camera
-                    </div>
-                    <br>
-                    <div class="cameratxt2">
-                        Capture images with your webcam.
-                    </div>
-                </button>
-            </div>
-            <div class="Importx">
-                <input type="button" value="x">
-            </div>
-        </div>
+
         <div class="labelwrap">
             <div id="Allimagestitle">
                 <h2>All images</h2>
@@ -145,18 +162,18 @@
                 
             </div>
             <div id="labeltitle1">
-                <h2>Label1</h2>
+                <h2>{{label1}}</h2>
                 <span id="labelcount1">
-                    0
+                    {{label1_correct}} / {{label1_len}}
                 </span>
             </div>
             <div class="labeled1">
                 
             </div>
             <div id="labeltitle2">
-                <h2>Label2</h2>
+                <h2>{{label2}}</h2>
                 <span id="labelcount2">
-                    0
+                    {{label2_correct}} /{{label2_len}}
                 </span>
             </div>
             <div class="labeled2">

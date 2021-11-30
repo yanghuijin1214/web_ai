@@ -7,6 +7,23 @@ body {
     user-select: none;
 }
 
+progress::-webkit-progress-value {   
+    background-color:#d5c9dd;  
+    border:0;
+    border-radius: 9px; }
+
+progress {
+    background-color:#d5c9dd;
+    border:0;
+    border-radius: 9px;
+}
+
+progress::-webkit-progress-bar {   
+    background-color:rgba(180, 180, 180);
+    border:0;
+    border-radius: 9px; 
+}
+
 .frame{
     background-color: #f3f3f3;
     width: 100%;
@@ -153,7 +170,7 @@ body {
     border-radius: 5px;
     border: none;
     width: 150px;
-    height: 50px;
+    height: 40px;
     font-size: 1.2em;
 }
 
@@ -161,81 +178,141 @@ body {
     cursor: pointer;
 }
 
-.Countbox{
-    overflow: auto;
+.All{
     position: absolute;
-    top: 420px;
-    /*bottom: 80px;*/
-    left: 25px;
-    width: 250px;
-    height: 30%;
-
+    top: 0px;
+    left: -5px;
 }
 
-.Allprog{
+#Allb{
+    width: 250px;
+    height: 47px;
     position: absolute;
-    left: 10px;
-    top: 20px;
+    top: 420px;
+    left: 30px;
+    border-radius: 5px;
+    border: none;
+    background-color: white;
 }
 
 .Alltxt{
     position: absolute;
-    left: 10px;
-    top: 2px;
-    font-size: 1em;
+    width: 100px;
+    left: 15px;
+    top: 6px;
+    font-size: 1.2em;
+    text-align: left;
 }
 
 .Allresult{
     position: absolute;
-    top: 2px;
-    left: 220px;
+    top: 6px;
+    right: 15px;
+    font-size: 1.2em;
     text-align: right;
-    font-size: 1em;
 }
 
-.Prog1{
+.Allprog{
     position: absolute;
-    left: 10px;
-    top: 60px;
+    top: 28px;
+    left: 11px;
+}
+
+#Allb:hover{
+    background-color: rgba(0,0,0,0.07);
+    cursor: pointer;
+}
+
+.L1{
+    position: absolute;
+    top: 55px;
+    left: -5px;
+}
+
+#L1B{
+    width: 250px;
+    height: 47px;
+    position: absolute;
+    top: 420px;
+    left: 30px;
+    border-radius: 5px;
+    border: none;
+    background-color: white;
 }
 
 .Ltxt1{
     position: absolute;
-    left: 10px;
-    top: 44px;
+    width: auto;
+    left: 15px;
+    top: 6px;
+    font-size: 1.2em;
     text-align: left;
-    font-size: 1em;
 }
 
 .Result1{
     position: absolute;
-    top: 44px;
-    left: 220px;
+    top: 6px;
+    right: 15px;
+    font-size: 1.2em;
     text-align: right;
-    font-size: 1em;
 }
 
-.Prog2{
+.Prog1{
     position: absolute;
-    left: 10px;
-    top: 100px;
+    top: 28px;
+    left: 11px;
+}
+
+#L1B:hover{
+    background-color: rgba(0,0,0,0.07);
+    cursor: pointer;
+}
+
+.L2{
+    position: absolute;
+    top: 110px;
+    left: -5px;
+}
+
+#L2B{
+    width: 250px;
+    height: 47px;
+    position: absolute;
+    top: 420px;
+    left: 30px;
+    border-radius: 5px;
+    border: none;
+    background-color: white;
 }
 
 .Ltxt2{
     position: absolute;
-    left: 10px;
-    top: 84px;
+    width: auto;
+    left: 15px;
+    top: 6px;
+    font-size: 1.2em;
     text-align: left;
-    font-size: 1em;
 }
 
 .Result2{
     position: absolute;
-    top: 84px;
-    left: 220px;
+    top: 6px;
+    right: 15px;
+    font-size: 1.2em;
     text-align: right;
-    font-size: 1em;
 }
+
+.Prog2{
+    position: absolute;
+    top: 28px;
+    left: 11px;
+}
+
+#L2B:hover{
+    background-color: rgba(0,0,0,0.07);
+    cursor: pointer;
+}
+
 
 .Box{
     position: absolute;
@@ -251,7 +328,7 @@ body {
 .Images input{
     position: absolute;
     top: 2px;
-    left: 3px;
+    left: 102.3px;
     border: none;
     border-radius: 10px;
     background:none;
@@ -267,7 +344,7 @@ body {
 .Camera input{
     position: absolute;
     top: 2px;
-    left: 102.3px;
+    left: 3px;
     border: none;
     border-radius: 10px;
     background:none;

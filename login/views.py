@@ -98,13 +98,13 @@ def label_change(request):
             label.label1=label1
             label.save()
             #image 라벨링명 일괄수정
-            Image.objects.filter(user_id=user.user_id,labeling_name=bef_label1).update(labeling_name=label1)
+            Image.objects.filter(user=user,labeling_name=bef_label1).update(labeling_name=label1)
 
         elif label2:
             bef_label2=label.label2
             label.label2=label2
             label.save()
             #image 라벨링명 일괄수정
-            Image.objects.filter(user_id=user.user_id,labeling_name=bef_label2).update(labeling_name=label2)
+            Image.objects.filter(user=user,labeling_name=bef_label2).update(labeling_name=label2)
 
         return redirect('/')

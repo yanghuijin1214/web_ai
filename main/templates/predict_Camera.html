@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +9,7 @@
     <title>PREDICT</title>
     <link rel="stylesheet" href="{% static 'predict_Camera.css' %}">
 </head>
+
 <body>
     <div class="bar">
         <div class="Userimg">
@@ -17,7 +19,8 @@
             <u>{{userid}}</u>
         </div>
         <div class="Setting">
-            <button type="button" id="setting" onclick="location.href='/setting'"> <img src="{% static 'setting_img.png'%}" style="width: 30px; height: 30px">
+            <button type="button" id="setting" onclick="location.href='/setting'"> <img
+                    src="{% static 'setting_img.png'%}" style="width: 30px; height: 30px">
         </div>
         <div class="Logout">
             <input type="button" value="logout" onclick="location.href='/logout'">
@@ -34,40 +37,54 @@
         <div class="Predict">
             <input type="button" value="Predict" onclick="location.href='/predict/camera'">
         </div>
-        <div class="Countbox" >
-            <div class="All">
+        <div class="All">
+            <button type="button" id="Allb">
                 <div class="Alltxt">
                     All Images
                 </div>
                 <div class="Allprog">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{{total}}" max="{{total}}" style="width: 225px; "></progress>
                 </div>
                 <div class="Allresult">
-                    0%
+                    {{total}}
                 </div>
-            </div>
-            <div class="L1">
+            </button>
+        </div>
+        <div class="L1">
+            <button type="button" id="L1B">
                 <div class="Ltxt1">
-                    One
+                    {{label1}}
                 </div>
                 <div class="Result1">
-                    0%
+                    {%if label1_images%}
+                    {{label1_images|length}}
+                    {%else%}
+                    0
+                    {%endif%}
                 </div>
                 <div class="Prog1">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{%if label1_images%}{{label1_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                        style="width: 225px;"></progress>
                 </div>
-            </div>
-            <div class="L2">
+            </button>
+        </div>
+        <div class="L2">
+            <button type="button" id="L2B">
                 <div class="Ltxt2">
-                    Two
+                    {{label2}}
                 </div>
                 <div class="Result2">
-                    0%
+                    {%if label2_images%}
+                    {{label2_images|length}}
+                    {%else%}
+                    0
+                    {%endif%}
                 </div>
                 <div class="Prog2">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{%if label2_images%}{{label2_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                        style="width: 225px;"></progress>
                 </div>
-            </div>        
+            </button>
         </div>
     </div>
     <div class="frame">
@@ -83,6 +100,60 @@
                 <input type="button" value="Export" onclick="location.href='/predict/export'">
             </div>
         </div>
+        <div id="container">
+            <canvas id="camera_canvas"></canvas>
+            <video autoplay="true" id="videoElement"></video>
+            <div class="Done">
+                <input type="button" value="Done" onclick="location.href='/label'">
+            </div>
+            <button id="capture"></button>
+        </div>
     </div>
 </body>
+<input id="userid" style="display:none" value="{{userid}}">
+<img src="//:0" alt="" id="output">
+<a id="target" style="display: none"></a>
+
+
+<script>
+    var form = document.querySelector("#imageForm");
+    var video = document.querySelector("#videoElement");
+    var sensor = document.querySelector("#camera_canvas");
+    var capture = document.querySelector("#capture");
+    var userid = document.querySelector('#userid').value;
+
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch(function (err0r) {
+                console.log("Something went wrong!");
+            });
+    }
+    capture.addEventListener("click", function () {
+        sensor.width = video.videoWidth;
+        sensor.height = video.videoHeight;
+        sensor.getContext("2d").drawImage(video, 0, 0);
+        save(sensor);
+        console.log(sensor.height);
+    });
+
+    function save(canvas) {
+        var img = canvas.toDataURL('image/png');
+        img = img.replace("data:image/png;base64,", "");
+
+        $.ajax({
+            type: "POST",
+            url: "/image/save/",
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            data: { "image": img, "userid": userid, labeling: "false" },
+            dataType: "text"
+        }).success(function (o) {
+            alert('Image saved.');
+        });
+    }
+
+</script>
+
 </html>

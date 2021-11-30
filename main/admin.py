@@ -7,7 +7,7 @@ class ImageAdmin(admin.ModelAdmin):
     def image_tag(self, obj):
         return format_html('<img src="{}" />'.format(obj.image.url))
 
-    list_display=('user_id','upload_date','image_tag','labeling','labeling_name')
+    list_display=('user_id','upload_date','image_tag','labeling','labeling_name','labeling_int')
     
     image_tag.exmpty_value_display="Not available"
 

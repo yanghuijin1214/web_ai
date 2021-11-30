@@ -34,40 +34,54 @@
         <div class="Predict">
             <input type="button" value="Predict" onclick="location.href='/predict/export'">
         </div>
-        <div class="Countbox" >
-            <div class="All">
+        <div class="All">
+            <button type="button" id="Allb">
                 <div class="Alltxt">
                     All Images
                 </div>
                 <div class="Allprog">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{{total}}" max="{{total}}" style="width: 225px; "></progress>
                 </div>
                 <div class="Allresult">
-                    0%
+                    {{total}}
                 </div>
-            </div>
-            <div class="L1">
+            </button>
+        </div>
+        <div class="L1">
+            <button type="button" id="L1B">
                 <div class="Ltxt1">
-                    One
+                    {{label1}}
                 </div>
                 <div class="Result1">
-                    0%
+                    {%if label1_images%}
+                    {{label1_images|length}}
+                    {%else%}
+                    0
+                    {%endif%}
                 </div>
                 <div class="Prog1">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{%if label1_images%}{{label1_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                        style="width: 225px;"></progress>
                 </div>
-            </div>
-            <div class="L2">
+            </button>
+        </div>
+        <div class="L2">
+            <button type="button" id="L2B">
                 <div class="Ltxt2">
-                    Two
+                    {{label2}}
                 </div>
                 <div class="Result2">
-                    0%
+                    {%if label2_images%}
+                    {{label2_images|length}}
+                    {%else%}
+                    0
+                    {%endif%}
                 </div>
                 <div class="Prog2">
-                    <progress value="0" max="100" style="width: 225px;"></progress>
+                    <progress value="{%if label2_images%}{{label2_images|length}}{%else%}0{%endif%}" max="{{total}}"
+                        style="width: 225px;"></progress>
                 </div>
-            </div>        
+            </button>
         </div>
     </div>
     <div class="frame">

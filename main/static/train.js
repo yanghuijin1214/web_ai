@@ -1,26 +1,24 @@
-const Importmodal = document.querySelector('.Importmodal');
-const Import = document.querySelector('.Import')
-const Ix = document.querySelector('.Importx');
+const accuracy = document.querySelector('.accuracy');
+const accuracyB = document.querySelector('.accuracyB');
+const time = document.querySelector('.time');
+const timeB = document.querySelector('.timeB');
+
+accuracyB.addEventListener('click',()=>{
+    accuracy.style.display='none'
+    time.style.display='block'
+})
+
+timeB.addEventListener('click',()=>{
+    accuracy.style.display='block'
+    time.style.display='none'
+})
 
 const Sortmodal = document.querySelector('.Sortmodal');
 const Sort = document.querySelector('.Sort')
 const Sx = document.querySelector('.Sortx');
 
-
-Import.addEventListener('click',()=>{
-    Importmodal.style.display='block';
-    if (Sortmodal.style.display='block')
-        Sortmodal.style.display='none';
-})
-
-Ix.addEventListener('click',()=>{
-    Importmodal.style.display='none';
-})
-
 Sort.addEventListener('click',()=>{
     Sortmodal.style.display='block';
-    if (Importmodal.style.display='block')
-        Importmodal.style.display='none';
 })
 
 Sx.addEventListener('click',()=>{
