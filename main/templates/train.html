@@ -2,7 +2,6 @@
 {% load mathfilters %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -103,7 +102,7 @@
                     It took
                 </span>
                 <span class="T">
-                    1000sec
+                    {{time}} sec
                 </span>
                 <span class="timetxt">
                     to predict the images
@@ -139,7 +138,7 @@
                     <img src="{% static 'correct.png' %}" style="width:35px;height:35px" id="correcticon">
                 </div>
                 <div class="correcttxt">
-                    Sort Correct to Incorrect
+                    See only Correct
                 </div>
             </button>
             <button type="button" id="incorrectB" onclick="location.href='/train/?sort=incorrect'">
@@ -147,7 +146,7 @@
                     <img src="{% static 'incorrect.png' %}" style="width:35px;height:35px" id="incorrecticon">
                 </div>
                 <div class="incorrecttxt">
-                    Sort Incorrect to Correct
+                    See only Incorrect
                 </div>
             </button>
             <div class="Sortx">

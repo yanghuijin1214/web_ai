@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils.html import format_html
 import os
@@ -31,12 +32,24 @@ class Image(models.Model):
 
 #    image_tag.short_description = 'Image'
 #    image_tag.allow_tags = True    
-
+class OverWriteStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length=None):
+        if self.exists(name):
+            os.remove(os.path.join(settings.MEDIA_ROOT,name))
+        return name
 class Model(models.Model):
     user=models.ForeignKey(User,verbose_name="User",on_delete=models.CASCADE)
     model_name=models.CharField(max_length=50,verbose_name="모델 파일 이름")
-    model=models.FileField(upload_to="image/",verbose_name="파일 경로")
+    model=models.FileField(upload_to="model/",storage=OverWriteStorage,verbose_name="파일 경로")
     created_date=models.DateTimeField(auto_now_add=True,verbose_name="파일 생성 시간")
     data_size=models.IntegerField()
     accuracy=models.CharField(max_length=10,verbose_name="정확도")
     learning_time=models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.model_name
+
+    def delete(self, *args, **kargs):
+        if self.image:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.model.path))
+        super(Image, self).delete(*args, **kargs)

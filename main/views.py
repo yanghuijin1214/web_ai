@@ -2,17 +2,18 @@ from django.http.response import Http404, JsonResponse
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from login.decorators import login_check
-from .models import Image
+from .models import Image,Model
 from login.models import User,Label
 from django.core.files.base import ContentFile, File
 from django.views.decorators.csrf import csrf_exempt
 import base64
 from datetime import datetime
+from django.utils import timezone
 from django.core import serializers
 import json
+from django.core.files import File as DjangoFile
 from PIL import Image as Image1
  
-from .models import Model
 import torch.optim as optim
 import torch
 import torch.nn as nn
@@ -48,75 +49,56 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # Create your views here.
 
 class userDataset(Dataset):
-    def __init__(self, file_list, label_list, transforms_data=None):
+    def __init__(self, file_list, label_list):
         self.file_list = file_list
-        self.label_list=label_list
-        self.transforms = transforms_data
-    
+        self.label_list = label_list
+        self.transforms = transforms.Compose([
+                transforms.Resize((224,224)),
+                transforms.ToTensor(),
+                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+                #normalize,
+            ])
+
     def __len__(self):
         return len(self.file_list)
 
     def __getitem__(self, idx):
-        name=self.file_list[idx].split('/')[-1]
-
-        #방법1
-        #stream=open((settings.MEDIA_ROOT+"\\image\\"+name).encode('utf-8'),'rb')
-        #bytes=bytearray(stream.read())
-        #numpyArray=np.asarray(bytes,dtype=np.uint8)
-        #img=cv2.imdecode(numpyArray,cv2.IMREAD_UNCHANGED)
-        #img = cv2.imread(self.file_list[idx])
-
-
-        img = cv2.imdecode(np.fromfile(settings.MEDIA_ROOT+"\\image\\"+name, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
-        im_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = Image1.fromarray(im_rgb)
-#        label = self.label_list[idx]
-        label = torch.tensor(self.label_list[idx])
+        name = self.file_list[idx].split('/')[-1]
+        img=Image1.open(settings.MEDIA_ROOT+"\\image\\"+name)
         img_transformed = self.transforms(img)
+        label = self.label_list[idx]
+
+        return img_transformed,label,name
 
 
-        #img = Image1.open(settings.MEDIA_ROOT+"\\image\\"+name)
-        
-        #if self.transforms is not None:
-        #    img = self.transforms(img)
-
-        return (img_transformed,label,name)
-
-
-def dataSet(label1_image, label2_image) :
+def modelTrain(label1_image, label2_image, userID) :
     image_list = label1_image|label2_image
-    
+    try:
+        user=User.objects.get(user_id=userID)
+    except:
+        return
+        
     data_list = []
     Label_list = []
-        
-    
+
     for image in image_list:
         data_list.append(image.image.url)
-        Label_list.append(image.labeling_int)
+        Label_list.append(float(image.labeling_int))
 
-
-        transforms_data =  transforms.Compose([
-            transforms.Resize((224,224)),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-            #normalize,
-        ])
-
-    train_ds = userDataset(file_list = data_list, label_list = Label_list,transforms_data=transforms_data)
+    train_ds = userDataset(file_list = data_list, label_list = Label_list)
     train_loader = DataLoader(train_ds, batch_size = 8, shuffle=True)
 
-    return train_ds, train_loader
-
-def modelTrain(train_loader, train_ds, userID) :
-    save_path=settings.MEDIA_URL+'model/'
+    save_path=settings.MEDIA_ROOT+"\\model\\"
     model = models.resnet18(pretrained=True)
     num_features = model.fc.in_features
     model.fc = nn.Linear(num_features, 1)
     model = model.to(device)
-    criterion = nn.BCELoss()
+    criterion=torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor(5.))
+    #criterion = nn.BCELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-
+    
     summary(model, (3, 224, 224), device=device.type)
+    
 
     num_epochs = 30
     model.train()
@@ -124,65 +106,101 @@ def modelTrain(train_loader, train_ds, userID) :
 
     accList = []
     modelList = []
-
-    print(device)
+    timeList=[]
 
     # 전체 반복(epoch) 수 만큼 반복하며
     for epoch in range(num_epochs):
         running_loss = 0.
         running_corrects = 0
+        corrected=0
 
         # 배치 단위로 학습 데이터 불러오기
-        for inputs, labels,name in train_loader:
-            print(inputs,labels)
-            print(name)
+        for inputs, labels, name in train_loader:
+
             inputs = inputs.to(device)
-            labels = labels.to(device)
+            labels = labels.to(device) 
+            labels = labels.unsqueeze(1)
 
             # 모델에 입력(forward)하고 결과 계산
             optimizer.zero_grad()
-            outputs = model(inputs)
-            _, preds = torch.max(outputs, 1)
-            loss = criterion(outputs, labels)
 
+            outputs = model(inputs)
+
+            _, preds = torch.max(outputs, 1)
+            loss = criterion(outputs.float(), labels.float())
+            
             # 역전파를 통해 기울기(gradient) 계산 및 학습 진행
             loss.backward()
             optimizer.step()
 
             running_loss += loss.item() * inputs.size(0)
-            running_corrects += torch.sum(preds == labels.data)
             
-            try:
-                image=Image.objects.get(image_name=name)
-                image.training=True
-                image.predict=preds
-                image.save()
-            except:
-                pass
+            running_corrects += torch.sum(preds == labels.data)
+
+            for i in range(len(name)):
+                try:
+                    image=Image.objects.get(image_name=name[i])
+                    image.training=True
+                    if outputs.detach().numpy()[i]<0:
+                        image.predict=0
+                    else:
+                        image.predict=1
+                    image.save()
+                    if image.predict==image.labeling_int:
+                        corrected+=1
+                except:
+                    #print("i'm here!")
+                    return
 
         epoch_loss = running_loss / len(train_ds)
-        epoch_acc = running_corrects / len(train_ds) * 100.
-        accList.append(epoch_acc) # 정확도가 90%을 넘기지 못할 시, 가장 좋은 정확도의 모델을 위해 사용
+        corrected_acc=corrected/len(train_ds)*100.
+        #epoch_acc = running_corrects / len(train_ds) * 100.
+        
+        learning_time=time.time() - start_time #학습시간 DB에 저장해야해서 변수로 저장
+        
+        accList.append(corrected_acc) # 정확도가 90%을 넘기지 못할 시, 가장 좋은 정확도의 모델을 위해 사용
         modelList.append(model)
+        timeList.append(learning_time)
         # 학습 과정 중에 결과 출력
-        print('#{} Loss: {:.4f} Acc: {:.4f}% Time: {:.4f}s'.format(epoch, epoch_loss, epoch_acc, time.time() - start_time))
+        print('#{} Loss: {:.4f} Acc: {:.4f}% Time: {:.4f}s'.format(epoch, epoch_loss, corrected_acc, learning_time))
 
-        # 정확도가 90%를 넘겼을 시, 그 모델을 바로 사용
-        if epoch_acc >= 90:
-            torch.save(model, save_path + userID + '.pt') # database path입력하기
-            dat=open(save_path + userID + '.pt',mode='r')
-            new_model=Model()
-            new_model.model=File(dat)
-            new_model.model_name=userID+".pt"
-            
+        if corrected_acc >= 90:
+            torch.save( model,'media/model/'+userID + '__.pt') # database path입력하기
+            file_obj1 = DjangoFile(open(save_path + userID + '__.pt', mode='rb'), name=userID+".pt")
+
+            try:
+                new_model=Model.objects.get(user=user,model_name=userID+'.pt')
+                new_model.model=file_obj1
+                new_model.data_size=len(image_list)
+                new_model.accuracy=corrected_acc
+                new_model.learning_time=learning_time
+                new_model.created_date=timezone.now()
+            except: #없으면 모델 새로 생성
+                new_model=Model()
+                new_model.user=user
+                new_model.model=file_obj1
+                new_model.model_name=userID+".pt"
+                new_model.data_size=len(image_list)
+                new_model.accuracy=corrected_acc
+                new_model.learning_time=learning_time
 
             new_model.save()
+            return
 
     # 정확도가 90%을 넘지 않을 경우, 30번 중 정확도가 가장 높은 모델 저장
     idx = accList.index(max(accList))
-    torch.save(modelList[idx], save_path) # database path 입력하기
 
-    #model save 수정 필요
+    #가능한??
+    torch.save( modelList[idx],'media/model/'+userID + '__.pt') # database path입력하기
+    file_obj1 = DjangoFile(open(save_path + userID + '__.pt', mode='rb'), name=userID+".pt")            
+    new_model=Model()
+    new_model.user=user
+    new_model.model=file_obj1
+    new_model.model_name=userID+".pt"
+    new_model.data_size=len(image_list)
+    new_model.accuracy=accList[idx]
+    new_model.learning_time=timeList[idx]
+    new_model.save()
 
 
 
@@ -211,7 +229,7 @@ def label(request):
         label1_images=Image.objects.filter(user=user,labeling=True,labeling_name=label.label1).order_by('-upload_date')
         label2_images=Image.objects.filter(user=user,labeling=True,labeling_name=label.label2).order_by('-upload_date')
         unlabeled_images=Image.objects.filter(user=user,labeling=False).order_by('-upload_date') #upload날짜 내림차순
-
+    
     total=len(label1_images)+len(label2_images)+len(unlabeled_images)
 
     return render(request,'label.html',{'userid':user_id,'total':total ,'label1':label.label1,'label2':label.label2,'label1_images':label1_images,'label2_images':label2_images,'unlabeled_images':unlabeled_images})
@@ -226,6 +244,7 @@ def train(request):
             user = User.objects.get(user_id=user_id)
             images=Image.objects.filter(user=user,labeling=True,training=True)
             label=Label.objects.get(user=user.id)
+            model=Model.objects.get(user=user)
         except:
             return render(request,'train.html',{'userid':user_id})
 
@@ -233,6 +252,7 @@ def train(request):
         label1_images=images.filter(labeling_int=0).order_by('-upload_date')
         label2_images=images.filter(labeling_int=1).order_by('-upload_date')
 
+        train_time=round(float(model.learning_time),4)
         #개수
         total=len(images)
         label1_len=len(label1_images)
@@ -257,8 +277,8 @@ def train(request):
             label2_images=label2_images.filter(predict="0")
 
             images=label1_images|label2_images
-
-        return render(request,'train.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,
+        
+        return render(request,'train.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,'time':train_time,
         'all':images,'total_len':total,'total_correct':total_correct,
         'label1_images':label1_images,'label1_len':label1_len,'label1_correct':label1_correct,
         'label2_images':label2_images,'label2_len':label2_len,'label2_correct':label2_correct})
@@ -272,11 +292,11 @@ def train(request):
             label=Label.objects.get(user=user.id)
         except:
             return HttpResponse("Error",status=400)
-        label1_image=Image.objects.filter(user_id=user_id,labeling_name=label.label1)
-        label2_image=Image.objects.filter(user_id=user_id,labeling_name=label.label2)
-        train_loader, train_ds = dataSet(label1_image, label2_image)
-
-        trainModel = modelTrain(train_loader, train_ds,user.user_id)
+        label1_image=Image.objects.filter(user=user,labeling_name=label.label1)
+        label2_image=Image.objects.filter(user=user,labeling_name=label.label2)
+        #train_loader, train_ds = dataSet(label1_image, label2_image)
+        trainModel = modelTrain(label1_image, label2_image,user.user_id)
+        #trainModel = modelTrain(train_loader, train_ds,user.user_id)
         label1_json=serializers.serialize('json',label1_image)
         label2_json=serializers.serialize('json',label2_image)
         
@@ -289,12 +309,15 @@ def predict_image(request):
     try:
         user = User.objects.get(user_id=user_id)
         images=Image.objects.filter(user=user,labeling=True,training=True)
+        label=Label.objects.get(user=user.id)
+        model=Model.objects.get(user=user)
     except:
         return render(request,'predict_Images.html',{'userid':user_id})
 
     label1_images=images.filter(labeling_int=0)
     label2_images=images.filter(labeling_int=1)
 
+    train_time=round(float(model.learning_time),4)
     #개수
     total=len(images)
     label1_len=len(label1_images)
@@ -304,7 +327,7 @@ def predict_image(request):
     label2_correct=len(label2_images.filter(predict="1"))
     total_correct=label1_correct+label2_correct 
 
-    return render(request,'predict_Images.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,
+    return render(request,'predict_Images.html',{'userid':user_id,'total_len':total,'total_correct':total_correct, 'label1':label.label1,'label2':label.label2,'time':train_time,
     'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
 
 @csrf_exempt
@@ -316,12 +339,15 @@ def predict_camera(request):
         try:
             user = User.objects.get(user_id=user_id)
             images=Image.objects.filter(user=user,labeling=True,training=True)
+            label=Label.objects.get(user=user.id)
+            model=Model.objects.get(user=user)
         except:
             return render(request,'predict_Images.html',{'userid':user_id})
 
         label1_images=images.filter(labeling_int=0)
         label2_images=images.filter(labeling_int=1)
 
+        train_time=round(float(model.learning_time),4)
         #개수
         total=len(images)
         label1_len=len(label1_images)
@@ -331,7 +357,7 @@ def predict_camera(request):
         label2_correct=len(label2_images.filter(predict="1"))
         total_correct=label1_correct+label2_correct
 
-        return render(request,'predict_Camera.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,
+        return render(request,'predict_Camera.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,'label1':label.label1,'label2':label.label2,'time':train_time,
     'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
     elif request.method=='POST':
         user_id=request.session.get('user')
@@ -344,12 +370,15 @@ def predict_export(request):
     try:
         user = User.objects.get(user_id=user_id)
         images=Image.objects.filter(user=user,labeling=True,training=True)
+        label=Label.objects.get(user=user.id)
+        model=Model.objects.get(user=user)
     except:
         return render(request,'predict_Images.html',{'userid':user_id})
 
     label1_images=images.filter(labeling_int=0)
     label2_images=images.filter(labeling_int=1)
 
+    train_time=round(float(model.learning_time),4)
     #개수
     total=len(images)
     label1_len=len(label1_images)
@@ -359,7 +388,7 @@ def predict_export(request):
     label2_correct=len(label2_images.filter(predict="1"))
     total_correct=label1_correct+label2_correct
 
-    return render(request,'predict_Export.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,
+    return render(request,'predict_Export.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,'label1':label.label1,'label2':label.label2,'time':train_time,
     'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
 
 

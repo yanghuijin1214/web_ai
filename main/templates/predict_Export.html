@@ -54,14 +54,14 @@
                     {{label1}}
                 </div>
                 <div class="Result1">
-                    {%if label1_images%}
+                    {%if label1_len != "0" %}
                     {{label1_correct|div:label1_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog1">
-                    <progress value="{%if label1_images%}{{label1_correct}}{%else%}0{%endif%}" max="{{label1_len}}"
+                    <progress value="{{label1_correct}}" max="{{label1_len}}"
                         style="width: 225px;"></progress>
                 </div>
             </button>
@@ -72,14 +72,14 @@
                     {{label2}}
                 </div>
                 <div class="Result2">
-                    {%if label2_images%}
+                    {%if label2_len != "0"%}
                     {{label2_correct|div:label2_len|mul:100|floatformat}}%
                     {%else%}
                     0
                     {%endif%}
                 </div>
                 <div class="Prog2">
-                    <progress value="{%if label2_images%}{{label2_correct}}{%else%}0{%endif%}" max="{{label2_len}}"
+                    <progress value="{{label2_correct}}" max="{{label2_len}}"
                         style="width: 225px;"></progress>
                 </div>
             </button>
@@ -100,7 +100,7 @@
                     It took
                 </span>
                 <span class="T">
-                    1000sec
+                    {{time}} sec
                 </span>
                 <span class="timetxt">
                     to predict the images
@@ -123,4 +123,20 @@
         </div>
     </div>
 </body>
+<script>
+    const accuracy = document.querySelector('.accuracy');
+    const accuracyB = document.querySelector('.accuracyB');
+    const time = document.querySelector('.time');
+    const timeB = document.querySelector('.timeB');
+
+    accuracyB.addEventListener('click', () => {
+        accuracy.style.display = 'none'
+        time.style.display = 'block'
+    })
+
+    timeB.addEventListener('click', () => {
+        accuracy.style.display = 'block'
+        time.style.display = 'none'
+    })
+</script>
 </html>
