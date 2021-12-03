@@ -1,0 +1,242 @@
+{% load static %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREDICT</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'predict_Camera.css' %}">
+</head>
+
+<body>
+    <div class="bar">
+        <div class="Userimg">
+            <img src="{% static 'user_img.png' %}" style="width: 150px; height: 150px">
+        </div>
+        <div class="Userid">
+            <u>{{userid}}</u>
+        </div>
+        <div class="Setting">
+            <button type="button" id="setting" onclick="location.href='/setting'"> <img
+                    src="{% static 'setting_img.png'%}" style="width: 30px; height: 30px">
+        </div>
+        <div class="Logout">
+            <input type="button" value="logout" onclick="location.href='/logout'">
+        </div>
+        {%if train == 'yes' %}
+        <div class="Delete">
+            <input type="button" value="Delete model">
+        </div>
+        {%endif%}
+        <div class="Label">
+            <input type="button" value="Label" onclick="location.href='/label'">
+        </div>
+        <div class="Train">
+            <input type="button" value="Train" onclick="location.href='/train'">
+        </div>
+        <div class="Predict">
+            <input type="button" value="Predict" onclick="location.href='/predict/camera'">
+        </div>
+        {%if train == 'yes' %}
+        <div class="All">
+            <button type="button" id="Allb">
+                <div class="Alltxt">
+                    All Images
+                </div>
+                <div class="Allprog">
+                    <progress value="{{label1_correct|add:label2_correct}}" max="{{total_len}}" style="width: 225px; "></progress>
+                </div>
+                <div class="Allresult">
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
+                </div>
+            </button>
+        </div>
+        <div class="L1">
+            <button type="button" id="L1B">
+                <div class="Ltxt1">
+                    {{label1}}
+                </div>
+                <div class="Result1">
+                    {%if label1_len != "0" %}
+                    {{label1_correct|div:label1_len|mul:100|floatformat}}%
+                    {%else%}
+                    0
+                    {%endif%}
+                </div>
+                <div class="Prog1">
+                    <progress value="{{label1_correct}}" max="{{label1_len}}"
+                        style="width: 225px;"></progress>
+                </div>
+            </button>
+        </div>
+        <div class="L2">
+            <button type="button" id="L2B">
+                <div class="Ltxt2">
+                    {{label2}}
+                </div>
+                <div class="Result2">
+                    {%if label2_len != "0"%}
+                    {{label2_correct|div:label2_len|mul:100|floatformat}}%
+                    {%else%}
+                    0
+                    {%endif%}
+                </div>
+                <div class="Prog2">
+                    <progress value="{{label2_correct}}" max="{{label2_len}}"
+                        style="width: 225px;"></progress>
+                </div>
+            </button>
+        </div>
+        <div class="accuracy">
+            <button type="button" class="accuracyB">
+                <span class="percent">
+                    {{total_correct|div:total_len|mul:100|floatformat}}%
+                </span>
+                <span class="accuracytxt">
+                    of images are predicted correctly
+                </span>
+            </button>
+        </div>
+        <div class="time">
+            <button type="button" class="timeB">
+                <span class="timetxt">
+                    It took
+                </span>
+                <span class="T">
+                    {{time}} sec
+                </span>
+                <span class="timetxt">
+                    to predict the images
+                </span>
+            </button>
+        </div>
+        {%else%}
+        <div class="bartxt">
+            After your model has trained, play with it using new images.
+        </div>
+        {%endif%}
+    </div>
+    <div class="frame">
+        <h1>Predict</h1>
+        <div class="Box">
+            <div class="Images">
+                <input type="button" value="Images" onclick="location.href='/predict/image'">
+            </div>
+            <div class="Camera">
+                <input type="button" value="Camera" onclick="location.href='/predict/camera'">
+            </div>
+            <div class="Export">
+                <input type="button" value="Export" onclick="location.href='/predict/export'">
+            </div>
+        </div>
+        {%if train == 'yes' %}
+        <div id="container">
+            <canvas id="camera_canvas"></canvas>
+            <video autoplay="true" id="videoElement"></video>
+            <button id="capture"></button>
+            <div id="result">hello</div>
+            <div id="x">
+                <button type="button" id="xbutton">x</button>
+            </div>
+        </div>
+        {%else%}
+        <button type="button" class="notTrain" onclick="location.href='/label'">
+            <div id="notTraintxt">
+                <span id="txt1">
+                    Please complete the
+                </span>
+                <span id="txt2">
+                    Train
+                </span>
+                <span id="txt1">
+                    first!
+                </span>
+            </div>
+        </button>
+        {%endif%}
+    </div>
+    {%if train == 'yes' %}
+    <input id="userid" style="display:none" value="{{userid}}">
+    <img src="//:0" alt="" id="output">
+    <a id="target" style="display: none"></a>
+    {%endif%}
+</body>
+
+<script>
+    var form = document.querySelector("#imageForm");
+    var video = document.querySelector("#videoElement");
+    var sensor = document.querySelector("#camera_canvas");
+    var capture = document.querySelector("#capture");
+    var userid = document.querySelector('#userid').value;
+    var result = document.querySelector("#result");
+    var xbutton = document.querySelector("#xbutton");
+    var x = document.querySelector("#x");
+
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch(function (err0r) {
+                console.log("Something went wrong!");
+            });
+    }
+    capture.addEventListener("click", function () {
+        //sensor.width = video.videoWidth;
+        sensor.width = 800;
+        //sensor.height = video.videoHeight;
+        sensor.height = 600;
+        console.log(sensor.width, sensor.height)
+        sensor.getContext("2d").drawImage(video, 0, 0, sensor.width, sensor.height);
+        save(sensor);
+        console.log(sensor.height);
+        result.style.visibility = 'visible';
+        x.style.visibility = 'visible';
+        xbutton.style.visibility = 'visible';
+        sensor.style.visibility = 'visible';
+    });
+
+    xbutton.addEventListener("click", function () {
+        result.style.visibility = 'hidden';
+        xbutton.style.visibility = 'hidden';
+        sensor.style.visibility = 'hidden';
+    });
+
+    function save(canvas) {
+        var img = canvas.toDataURL('image/png');
+        img = img.replace("data:image/png;base64,", "");
+        console.log(img);
+        $.ajax({
+            type: "POST",
+            url: "/predict/camera/",
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            data: { "image": img, "userid": userid },
+            dataType: "text"
+        }).success(function (result) {
+            console.log(result);
+            $("#result").html(result);
+        });
+    }
+
+    const accuracy = document.querySelector('.accuracy');
+    const accuracyB = document.querySelector('.accuracyB');
+    const time = document.querySelector('.time');
+    const timeB = document.querySelector('.timeB');
+
+    accuracyB.addEventListener('click', () => {
+        accuracy.style.display = 'none'
+        time.style.display = 'block'
+    })
+
+    timeB.addEventListener('click', () => {
+        accuracy.style.display = 'block'
+        time.style.display = 'none'
+    })
+
+</script>
+
+</html>
