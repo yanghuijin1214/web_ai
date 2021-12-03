@@ -59,7 +59,7 @@ class userDataset(Dataset):
 
     def __getitem__(self, idx):
         name = self.file_list[idx].split('/')[-1]
-        img=Image1.open(settings.MEDIA_ROOT+"\\image\\"+name)
+        img=Image1.open(settings.MEDIA_ROOT+"\\image\\"+name).convert('RGB')
         img_transformed = self.transforms(img)
         label = self.label_list[idx]
 
@@ -587,6 +587,3 @@ def update(request):
         #model update
         image.save()
         return redirect("/")
-
-
-
