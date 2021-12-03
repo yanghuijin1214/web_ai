@@ -8,18 +8,18 @@ body {
 }
 
 progress::-webkit-progress-value {   
-    background-color:#d5c9dd;  
+    background-color:rgb(35, 218, 35);
     border:0;
     border-radius: 9px; }
 
 progress {
-    background-color:#d5c9dd;
+    background-color:rgb(35, 218, 35);
     border:0;
     border-radius: 9px;
 }
 
 progress::-webkit-progress-bar {   
-    background-color:rgba(180, 180, 180);
+    background-color:red;
     border:0;
     border-radius: 9px; 
 }
@@ -532,7 +532,8 @@ h1{
     position: absolute;
     width: 250px;
     top: 20px;
-    left: 50px;
+    left: 24px;
+    
 }
 
 #correctB:hover{
@@ -575,7 +576,7 @@ h1{
     position: absolute;
     width: 250px;
     top: 20px;
-    left: 50px;
+    left: 30px;
 }
 
 #incorrectB:hover{
@@ -612,6 +613,8 @@ h1{
 #labelcount1{
     display: inline;
     font-size: 1.5em;
+    position: absolute;
+    left: 17%;
 }
 
 .labeled1 {
@@ -636,6 +639,8 @@ h1{
 
 #labelcount2{
     font-size: 1.5em;
+    position: absolute;
+    left: 17%;
 }
 
 .labeled2 {
@@ -660,21 +665,23 @@ h1{
 #Allimagescount{
     display: inline;
     font-size: 1.5em;
+    position: absolute;
+    left: 17%;
 }
 
 #Allimagestitle h2{
     display: inline;
-    margin-right: 2em;
+    margin-right: 0em;
 }
 
 #labeltitle1 h2{
     display: inline;
-    margin-right: 3.9em;
+    margin-right: 0em;
 }
 
 #labeltitle2 h2{
     display: inline;
-    margin-right: 3.9em;
+    margin-right: 0em;
 }
 
 .Allimages {
@@ -709,7 +716,7 @@ h1{
     padding: 0px;
     border-radius: 25px;
     position: relative;
-    top: -160px;
+    top: -135px;
     left: -30px;
 }
 
@@ -743,39 +750,43 @@ h1{
     visibility: visible;
 }
 
-#select{
+#correct{
     position: relative;
     z-index: 3;
     width: auto;
     height: auto;
-    /* background-color: #D5C9DD; */
-    background-color:rgba(200, 200, 200, 0.6);
-    top: 60px;
+    background-color: rgb(35, 218, 35);
+    top: 85px;
     left: -15px;
     border-radius: 10px;
     padding: 0.5em 1em 0.5em 0.5em;
     border: none;
     padding: 0.3em;
-}
-
-#select:hover{
-    background-color: #D5C9DD;
-
-}
-
-#select select{
-    border: none;
-    text-align: center;
-    background: none;
-    color: white;
     font-size: 1.2em;
     font-weight: bold;
-    
+    color: white;
+    text-align: center;
 }
 
-select option{
-    font-size: 1em;
+#incorrect{
+    position: relative;
+    z-index: 3;
+    width: auto;
+    height: auto;
+    background-color: red;
+    top: 85px;
+    left: -15px;
+    border-radius: 10px;
+    padding: 0.5em 1em 0.5em 0.5em;
+    border: none;
+    padding: 0.3em;
+    font-size: 1.2em;
     font-weight: bold;
-    background-color: rgba(219, 219, 219, 0.6);
-    color: rgba(0,0,0,0.5);
+    color: white;   
+    text-align: center;
+}
+
+#icon{
+    position: relative;
+    top: 3px;
 }

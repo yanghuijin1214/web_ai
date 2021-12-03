@@ -8,22 +8,21 @@ body {
 }
 
 progress::-webkit-progress-value {   
-    background-color:#d5c9dd;  
+    background-color:rgb(35, 218, 35);
     border:0;
     border-radius: 9px; }
 
 progress {
-    background-color:#d5c9dd;
+    background-color:rgb(35, 218, 35);
     border:0;
     border-radius: 9px;
 }
 
 progress::-webkit-progress-bar {   
-    background-color:rgba(180, 180, 180);
+    background-color:red;
     border:0;
     border-radius: 9px; 
 }
-
 .frame{
     background-color: #f3f3f3;
     width: 100%;
@@ -314,7 +313,63 @@ progress::-webkit-progress-bar {
     cursor: pointer;
 }
 
+.accuracy{
+    position: absolute;
+    left: 36px;
+    bottom: 80px;
+    width: 225px;
+    display: block;
+}
 
+.accuracyB{
+    border-radius: 5px;
+    border: none;
+    background-color: white;
+}
+
+.percent{
+    font-size: 1.5em;
+    color: #d5c9dd;
+}
+
+.accuracytxt{
+    font-size: 1.5em;
+}
+
+.accuracyB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.07);
+}
+
+.time{
+    position: absolute;
+    left: 36px;
+    bottom: 80px;
+    width: 225px;
+    display: none;
+}
+
+.timeB{
+    border-radius: 5px;
+    border: none;
+    background-color: white;
+}
+
+.T{
+    font-size: 1.5em;
+    color: #d5c9dd;
+}
+
+.timetxt{
+    font-size: 1.5em;
+}
+
+.timeB:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.07);
+}
+
+/*frame*/
 .Box{
     position: absolute;
     top: 20px;
@@ -396,8 +451,9 @@ h1{
 }
 
 #camera_canvas {
-    z-index: -1000;
-    display: none
+    z-index: 1000;
+    border-radius: 20px;
+    /* display: none */
 }
 
 #videoElement {
@@ -426,23 +482,41 @@ h1{
     background-color: rgb(107, 106, 106)
 }
 
-.Done{
+
+#result{
     position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.Done input{
-    background-color: #D5C9DD;
-    border: none;
-    font-size: 1.3em;
-    width: 90px;
-    height: 40px;
-    font-weight: bolder;
+    width: auto;
+    height: auto;
+    background-color: #d5c9dd;
+    border-radius: 10px;
     color: white;
-    border-radius: 15px;
+    font-size: 2em;
+    font-weight: bold;
+    bottom: 18px;
+    left: 20px;
+    padding: 5px 8px 5px 8px;
+    z-index: 1500;
+    visibility: hidden;
 }
 
-.Done input:hover{
-    cursor: pointer;
+#x{
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    z-index: 1500;
+    visibility: hidden;
+}
+
+#xbutton{
+    border: none;
+    font-size: 2em;
+    font-weight: bold;
+    border-radius: 10px;
+    background: none;
+    color: white;
+    z-index: 1500;
+}
+
+#xbutton:hover{
+    cursor:pointer
 }

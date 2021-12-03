@@ -24,22 +24,17 @@ from torch.optim.lr_scheduler import StepLR
 
 # dataset and transformation
 from torchvision import datasets
-import torchvision
 import torchvision.transforms as transforms
 from torchvision import models
 from torch.utils.data import DataLoader, Dataset
 import os
-import cv2
 from glob import glob
 
-# display images
-from torchvision import utils
-import matplotlib.pyplot as plt
 
 # utils
 import numpy as np
 import time
-import copy
+import io
 
 from django.conf import settings
 
@@ -244,19 +239,30 @@ def train(request):
             user = User.objects.get(user_id=user_id)
             images=Image.objects.filter(user=user,labeling=True,training=True)
             label=Label.objects.get(user=user.id)
-            model=Model.objects.get(user=user)
         except:
             return render(request,'train.html',{'userid':user_id})
-
+        
+        try:
+            model=Model.objects.get(user=user)
+        except:
+            model=None
+        
         images=images.order_by('-upload_date')
         label1_images=images.filter(labeling_int=0).order_by('-upload_date')
         label2_images=images.filter(labeling_int=1).order_by('-upload_date')
 
-        train_time=round(float(model.learning_time),4)
         #개수
         total=len(images)
+        print(total)
         label1_len=len(label1_images)
         label2_len=len(label2_images)
+
+        if model==None:
+            return render(request,'train.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,'train':'no'})
+        
+
+        train_time=round(float(model.learning_time),4)
+        
 
         label1_correct=len(label1_images.filter(predict="0"))
         label2_correct=len(label2_images.filter(predict="1"))
@@ -278,7 +284,7 @@ def train(request):
 
             images=label1_images|label2_images
         
-        return render(request,'train.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,'time':train_time,
+        return render(request,'train.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,'train':'yes','time':train_time,
         'all':images,'total_len':total,'total_correct':total_correct,
         'label1_images':label1_images,'label1_len':label1_len,'label1_correct':label1_correct,
         'label2_images':label2_images,'label2_len':label2_len,'label2_correct':label2_correct})
@@ -294,41 +300,101 @@ def train(request):
             return HttpResponse("Error",status=400)
         label1_image=Image.objects.filter(user=user,labeling_name=label.label1)
         label2_image=Image.objects.filter(user=user,labeling_name=label.label2)
-        #train_loader, train_ds = dataSet(label1_image, label2_image)
+        
         trainModel = modelTrain(label1_image, label2_image,user.user_id)
-        #trainModel = modelTrain(train_loader, train_ds,user.user_id)
         label1_json=serializers.serialize('json',label1_image)
         label2_json=serializers.serialize('json',label2_image)
         
         return JsonResponse({"label1":label1_json,"label2":label2_json},status=200)
 
 
+def get_prediction(image,user_id):
+    save_path=settings.MEDIA_ROOT+"\\model\\"
+            
+    model = torch.load(save_path + user_id + '.pt')
+
+    model.eval()
+    transforms_test = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])
+
+    image = transforms_test(image).unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        outputs = model(image)
+        _, preds = torch.max(outputs, 1)
+        print(preds[0])
+        if outputs.detach().numpy()[0]<0:
+            predict=0
+        else:
+            predict=1
+
+    return predict
+
+
+@csrf_exempt
 @login_check
 def predict_image(request):
-    user_id=request.session.get('user')
-    try:
-        user = User.objects.get(user_id=user_id)
-        images=Image.objects.filter(user=user,labeling=True,training=True)
-        label=Label.objects.get(user=user.id)
-        model=Model.objects.get(user=user)
-    except:
-        return render(request,'predict_Images.html',{'userid':user_id})
+    if request.method=='GET':
+        user_id=request.session.get('user')
+        try:
+            user = User.objects.get(user_id=user_id)
+            images=Image.objects.filter(user=user,labeling=True,training=True)
+            label=Label.objects.get(user=user.id)
+        except:
+            return render(request,'predict_Images.html',{'userid':user_id})
+        try:
+            model=Model.objects.get(user=user)
+        except:
+            model=None            
+        label1_images=images.filter(labeling_int=0)
+        label2_images=images.filter(labeling_int=1)
 
-    label1_images=images.filter(labeling_int=0)
-    label2_images=images.filter(labeling_int=1)
+        if model==None:
+            return render(request,'predict_Images.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,'train':'no'})
 
-    train_time=round(float(model.learning_time),4)
-    #개수
-    total=len(images)
-    label1_len=len(label1_images)
-    label2_len=len(label2_images)
+        train_time=round(float(model.learning_time),4)
+        #개수
+        total=len(images)
+        label1_len=len(label1_images)
+        label2_len=len(label2_images)
 
-    label1_correct=len(label1_images.filter(predict="0"))
-    label2_correct=len(label2_images.filter(predict="1"))
-    total_correct=label1_correct+label2_correct 
+        label1_correct=len(label1_images.filter(predict="0"))
+        label2_correct=len(label2_images.filter(predict="1"))
+        total_correct=label1_correct+label2_correct 
 
-    return render(request,'predict_Images.html',{'userid':user_id,'total_len':total,'total_correct':total_correct, 'label1':label.label1,'label2':label.label2,'time':train_time,
-    'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
+        return render(request,'predict_Images.html',{'userid':user_id,'total_len':total,'total_correct':total_correct, 'label1':label.label1,'label2':label.label2,'train':'yes','time':train_time,
+        'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
+    elif request.method=='POST':
+        img_string=request.POST.get('image',None)
+        user_id=request.POST.get('userid',None)
+        user_id2=request.session.get('user')
+        if user_id==user_id2:
+            try:
+                user=User.objects.get(user_id=user_id)
+                model=Model.objects.get(user=user)
+                label=Label.objects.get(user=user.id)
+            except:
+                return HttpResponse("Error",status=200)
+            try:
+                img_data=base64.b64decode(img_string)
+                bytesIo=io.BytesIO(img_data)
+                image=Image1.open(bytesIo)
+            except:
+                return HttpResponse("Error",status=200)
+            
+            pred=get_prediction(image,user_id)
+            if pred==0:
+                predict=label.label1
+            else:
+                predict=label.label2
+
+            return HttpResponse(predict,status=200)
+
+        return HttpResponse("Error",status=200)
+
 
 @csrf_exempt
 @login_check
@@ -340,9 +406,16 @@ def predict_camera(request):
             user = User.objects.get(user_id=user_id)
             images=Image.objects.filter(user=user,labeling=True,training=True)
             label=Label.objects.get(user=user.id)
+        except:
+            return render(request,'predict_Camera.html',{'userid':user_id})
+
+        try:
             model=Model.objects.get(user=user)
         except:
-            return render(request,'predict_Images.html',{'userid':user_id})
+            model=None
+
+        if model==None:
+            return render(request,'predict_Camera.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,'train':'no'})
 
         label1_images=images.filter(labeling_int=0)
         label2_images=images.filter(labeling_int=1)
@@ -357,12 +430,35 @@ def predict_camera(request):
         label2_correct=len(label2_images.filter(predict="1"))
         total_correct=label1_correct+label2_correct
 
-        return render(request,'predict_Camera.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,'label1':label.label1,'label2':label.label2,'time':train_time,
+        return render(request,'predict_Camera.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,'label1':label.label1,'label2':label.label2,'train':'yes','time':train_time,
     'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
     elif request.method=='POST':
-        user_id=request.session.get('user')
+        img_string=request.POST.get('image',None)
+        user_id=request.POST.get('userid',None)
+        user_id2=request.session.get('user')
+        if user_id==user_id2:
+            try:
+                user=User.objects.get(user_id=user_id)
+                model=Model.objects.get(user=user)
+                label=Label.objects.get(user=user.id)
+            except:
+                return HttpResponse("Error",status=200)
 
-        return HttpResponse("Banana",status=200)        
+            try:
+                img_data=base64.b64decode(img_string)
+                bytesIo=io.BytesIO(img_data)
+                image=Image1.open(bytesIo).convert('RGB')
+            except:
+                return HttpResponse("Error",status=200)
+            
+            pred=get_prediction(image,user_id)
+            if pred==0:
+                predict=label.label1
+            else:
+                predict=label.label2
+            print(predict)            
+            return HttpResponse(predict,status=200)
+        return HttpResponse("Error",status=200)        
 
 @login_check
 def predict_export(request):
@@ -371,25 +467,32 @@ def predict_export(request):
         user = User.objects.get(user_id=user_id)
         images=Image.objects.filter(user=user,labeling=True,training=True)
         label=Label.objects.get(user=user.id)
+    except:
+        return render(request,'predict_Export.html',{'userid':user_id})
+    try:
         model=Model.objects.get(user=user)
     except:
-        return render(request,'predict_Images.html',{'userid':user_id})
+        model=None
+    
+    if model==None:
+        return render(request,'predict_Export.html',{'userid':user_id,'label1':label.label1,'label2':label.label2,'train':'no'})
 
+    
     label1_images=images.filter(labeling_int=0)
     label2_images=images.filter(labeling_int=1)
 
     train_time=round(float(model.learning_time),4)
+    
     #개수
     total=len(images)
     label1_len=len(label1_images)
     label2_len=len(label2_images)
-
     label1_correct=len(label1_images.filter(predict="0"))
     label2_correct=len(label2_images.filter(predict="1"))
     total_correct=label1_correct+label2_correct
 
-    return render(request,'predict_Export.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,'label1':label.label1,'label2':label.label2,'time':train_time,
-    'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct})
+    return render(request,'predict_Export.html',{'userid':user_id,'total_len':total,'total_correct':total_correct,'label1':label.label1,'label2':label.label2,'train':'yes','time':train_time,
+    'label1_len':label1_len,'label1_correct':label1_correct,'label2_len':label2_len,'label2_correct':label2_correct,'model':model.model})
 
 
 @csrf_exempt

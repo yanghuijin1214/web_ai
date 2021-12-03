@@ -27,9 +27,11 @@
         <div class="Logout">
             <input type="button" value="logout" onclick="location.href='/logout'">
         </div>
+        {%if train == 'yes' %}
         <div class="Delete">
             <input type="button" value="Delete model">
         </div>
+        {%endif%}
         <div class="Label">
             <input type="button" value="Label" onclick="location.href='/label'">
         </div>
@@ -39,6 +41,10 @@
         <div class="Predict">
             <input type="button" value="Predict" onclick="location.href='/predict/camera'">
         </div>
+        {%if train == 'no' %}
+        <!--여기 문구 넣어주세용-->
+        Train First!
+        {%else%}
         <div class="All">
             <button type="button" id="Allb">
                 <div class="Alltxt">
@@ -111,6 +117,7 @@
                 </span>
             </button>
         </div>
+        {%endif%}
     </div>
     <div class="frame">
         <h1>Predict</h1>
@@ -185,7 +192,7 @@
     function save(canvas) {
         var img = canvas.toDataURL('image/png');
         img = img.replace("data:image/png;base64,", "");
-        console.log("image save!")
+        console.log(img);
         $.ajax({
             type: "POST",
             url: "/predict/camera/",
@@ -193,7 +200,7 @@
             data: { "image": img, "userid": userid },
             dataType: "text"
         }).success(function (result) {
-            console.log(result)
+            console.log(result);
             $("#result").html(result);
         });
     }
