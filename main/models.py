@@ -50,6 +50,6 @@ class Model(models.Model):
         return self.model_name
 
     def delete(self, *args, **kargs):
-        if self.image:
+        if self.model:
             os.remove(os.path.join(settings.MEDIA_ROOT, self.model.path))
-        super(Image, self).delete(*args, **kargs)
+        super(Model, self).delete(*args, **kargs)

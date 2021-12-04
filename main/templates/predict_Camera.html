@@ -28,9 +28,12 @@
             <input type="button" value="logout" onclick="location.href='/logout'">
         </div>
         {%if train == 'yes' %}
-        <div class="Delete">
-            <input type="button" value="Delete model">
-        </div>
+        <form action="/delete/model/" method="POST">
+            <div class="Delete">
+                <input type="hidden" name="userid" value="{{userid}}">
+                <input type="button" value="Delete model" onclick="if(window.confirm('Are you sure delete?')){this.form.submit();}">
+            </div>
+        </form>
         {%endif%}
         <div class="Label">
             <input type="button" value="Label" onclick="location.href='/label'">
@@ -41,7 +44,7 @@
         <div class="Predict">
             <input type="button" value="Predict" onclick="location.href='/predict/camera'">
         </div>
-        {%if train == 'yes' %}
+        {%if train == 'yes' and total_len != 0 %}
         <div class="All">
             <button type="button" id="Allb">
                 <div class="Alltxt">

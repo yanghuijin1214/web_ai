@@ -40,6 +40,7 @@ urlpatterns = [
     path('login/',login),
     path('join/',join),
     path('logout/',logout),
-    path('setting/',setting)
+    path('setting/',setting),
+    path('delete/model/',delete_model)
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

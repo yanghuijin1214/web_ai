@@ -290,7 +290,6 @@ def train(request):
         'label2_images':label2_images,'label2_len':label2_len,'label2_correct':label2_correct})
 
     elif request.method =='POST':
-        #body=json.loads(request.body.decode('utf-8'))
         user_id=request.POST.get('userid')
         print(user_id)
         try:
@@ -496,6 +495,7 @@ def predict_export(request):
 
 
 @csrf_exempt
+@login_check
 def image(request):
     if(request.method=='POST'):
         img_string=request.POST.get('image',None)
@@ -522,7 +522,9 @@ def image(request):
     else:
         return HttpResponse("hello image")
 
+
 @csrf_exempt
+@login_check
 def upload(request):
     if(request.method=='POST'):
         img=request.FILES['file']
@@ -548,6 +550,7 @@ def upload(request):
 
 
 @csrf_exempt
+@login_check
 def delete(request):
     if(request.method=='POST'):
         user_id=request.session.get('user')
@@ -562,6 +565,7 @@ def delete(request):
 
 
 @csrf_exempt
+@login_check
 def update(request):
     if request.method=='POST':
         img_name=request.POST.get('image_name')
@@ -586,4 +590,21 @@ def update(request):
 
         #model update
         image.save()
+        return redirect("/")
+
+
+@csrf_exempt
+@login_check
+def delete_model(request):
+    if request.method=='POST':
+        user_id1=request.POST.get('userid')
+        user_id2=request.session.get('user')
+        if user_id1==user_id2:
+            try:
+                user=User.objects.get(user_id=user_id2)
+                Model.objects.get(user=user).delete()
+                Image.objects.filter(user=user).delete()
+            except:
+                raise Http404("error")
+        
         return redirect("/")
