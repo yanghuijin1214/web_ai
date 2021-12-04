@@ -113,7 +113,9 @@ yes.addEventListener('click', () => {
             async:false,
             dataType:'json',
             error:function(){
-                alert("Ajax post request to the following script failed : /train/");
+                alert("Train Error! ");
+//                alert("Ajax post request to the following script failed : /train/");
+                window.location.href='/label/';
             },
             success:function(){
                 window.location.href='/train/'; //train페이지로 넘어가기

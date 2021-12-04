@@ -24,9 +24,12 @@
             <input type="button" value="logout" onclick="location.href='/logout'">
         </div>
         {%if train == 'yes' %}
-        <div class="Delete">
-            <input type="button" value="Delete model">
-        </div>
+        <form action="/delete/model/" method="POST">
+            <div class="Delete">
+                <input type="hidden" name="userid" value="{{userid}}">
+                <input type="button" value="Delete model" onclick="if(window.confirm('Are you sure delete?')){this.form.submit();}">
+            </div>
+        </form>
         {%endif%}
         <div class="Label">
             <input type="button" value="Label" onclick="location.href='/label'">
@@ -38,10 +41,7 @@
             <input type="button" value="Predict" onclick="location.href='/predict/export'">
         </div>
 
-        {%if train == 'no' %}
-        <!--여기 문구 넣어주세용-->
-        Train First!
-        {%else%}
+        {%if train == 'yes' and total_len != 0 %}
         <div class="All">
             <button type="button" id="Allb">
                 <div class="Alltxt">
@@ -114,6 +114,10 @@
                 </span>
             </button>
         </div>
+        {%else%}
+        <div class="bartxt">
+            You can download your model after training.
+        </div>
         {%endif%}
     </div>
     <div class="frame">
@@ -148,24 +152,19 @@
         </div>
         {%else%}
         <!--학습 미완료-->
-        <div class="back">
-            <div class="notTrain">
-                <div id="notTraintxt">
-                    <span id="txt1">
-                        Please complete the
-                    </span>
-                    <span id="txt2">
-                        Train
-                    </span>
-                    <span id="txt1">
-                        first!
-                    </span>
-                </div>
-                <button type="button" onclick="location.href='/label'" id="ok">
-                    Ok
-                </button>
+        <button type="button" class="notTrain" onclick="location.href='/label'">
+            <div id="notTraintxt">
+                <span id="txt1">
+                    Please complete the
+                </span>
+                <span id="txt2">
+                    Train
+                </span>
+                <span id="txt1">
+                    first!
+                </span>
             </div>
-        </div>
+        </button>
         {%endif%}
     </div>
 </body>

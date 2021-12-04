@@ -520,3 +520,50 @@ h1{
 #xbutton:hover{
     cursor:pointer
 }
+
+.notTrain{
+    position: absolute;
+    top: 35%;
+    left: 25%;
+    width: 450px;
+    height: 140px;
+    border-radius: 5px;
+    border: none;
+    background: none;
+}
+
+.notTrain:hover{
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#notTraintxt{
+    position: absolute;
+    top: 12%;
+    left: 0%;
+}
+
+#txt1{
+    font-size: 3.3em;
+    font-weight: bold;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+#txt2{
+    font-size: 3.3em;
+    font-weight: bold;
+    text-align: center;
+    color: #c7bacf;
+}
+
+/*train전 bar txt*/
+.bartxt{
+    width: 250px;
+    height: auto;
+    position: absolute;
+    bottom: 18%;
+    left: 26px;
+    font-size: 1.25em;
+    text-align: center;
+}
